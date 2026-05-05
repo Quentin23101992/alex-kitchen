@@ -1,6 +1,6 @@
 // Alex's Kitchen — Service Worker (cache-first)
 // Prevents Safari from purging the app after 7 days of non-use
-const CACHE_NAME = 'alexkitchen-v12';
+const CACHE_NAME = 'alexkitchen-v13';
 const ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', function(e) {
