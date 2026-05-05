@@ -77,6 +77,7 @@
 html{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text',system-ui,sans-serif;background:var(--cream);color:var(--text);padding-bottom:100px;min-height:100vh;min-height:-webkit-fill-available;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:var(--fs-base);line-height:var(--lh-loose);letter-spacing:0.01em;overscroll-behavior:none;-webkit-touch-callout:none}
 button,input,select,textarea,.ni,.chip,.fab,.fab-mini-btn,.ci,.hi,.abtn,.xbtn,.bs-alg,.bs-sev-btn,.uz-cell{touch-action:manipulation}
+input,select,textarea{font-size:16px!important}
 
 /* === REDUCED MOTION === */
 @media(prefers-reduced-motion:reduce){
@@ -435,6 +436,23 @@ button:focus-visible,.ni:focus-visible{outline:2px solid var(--terra);outline-of
 .fab-mini-label{background:var(--black);color:#fff;padding:var(--sp-6) var(--sp-12);border-radius:var(--radius-sm);font-size:var(--fs-sm);font-weight:var(--fw-bold);white-space:nowrap}
 
 /* === TOAST === */
+/* === HISTORY HINTS (smart suggestions) === */
+.hint-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0}
+.hint-label{font-size:12px;font-weight:600;color:var(--text-muted);margin-right:4px}
+.hint-chip{background:var(--sage-soft);color:var(--sage-dark);border:1.5px solid var(--sage);padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--duration-fast);min-height:32px}
+.hint-chip:active{background:var(--sage);color:#fff;transform:scale(0.95)}
+.hint-info{background:var(--amber-soft);color:var(--amber);border-color:var(--amber);cursor:default}
+/* === REWARD PULSE (instant feedback animation) === */
+@keyframes rewardPulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes rewardGlow{0%{box-shadow:0 0 0 0 rgba(91,138,114,0.4)}70%{box-shadow:0 0 0 10px rgba(91,138,114,0)}100%{box-shadow:0 0 0 0 rgba(91,138,114,0)}}
+.reward-pulse{animation:rewardPulse 0.3s var(--ease-spring)}
+.reward-glow{animation:rewardGlow 0.6s ease-out}
+/* === PROGRESS RING (completion feedback) === */
+.phase-progress{display:flex;align-items:center;gap:8px;padding:4px 0}
+.phase-progress-bar{flex:1;height:6px;background:var(--cream-dark);border-radius:3px;overflow:hidden}
+.phase-progress-fill{height:100%;background:var(--sage);border-radius:3px;transition:width 0.5s var(--ease-out)}
+.phase-progress-text{font-size:11px;font-weight:700;color:var(--sage);white-space:nowrap}
+
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--black);color:#fff;padding:var(--sp-12) var(--sp-20);border-radius:var(--radius);font-size:var(--fs-sm);font-weight:var(--fw-bold);z-index:200;opacity:0;transition:all var(--duration-base);pointer-events:none;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:var(--sp-12);max-width:90vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 .toast .undo-btn{background:var(--terra);color:var(--black);border:none;padding:var(--sp-6) var(--sp-16);border-radius:var(--radius-sm);font-size:var(--fs-sm);font-weight:var(--fw-black);cursor:pointer;white-space:nowrap;min-height:44px}
@@ -788,7 +806,10 @@ html[data-theme="dark"] .fi:focus,html[data-theme="dark"] .cfg-add input:focus,h
 <div class="hdr">
   <div class="hdr-top">
     <div><h1><span class="frog-dot">&#9679;</span> Alex's Kitchen</h1><div class="sub">Hop House — Frog Pubs</div></div>
-    <button class="copy-yest" onclick="copyYesterday()">Copy yesterday</button>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="copy-yest" onclick="toggleQuiet()" id="quietBtn" title="Animations: full" style="font-size:11px;padding:6px 10px;min-width:auto">Full</button>
+      <button class="copy-yest" onclick="copyYesterday()">Copy yesterday</button>
+    </div>
   </div>
   <div class="ctrls">
     <input type="date" class="date-in" id="shiftDate" onchange="chgDate()">
@@ -797,8 +818,16 @@ html[data-theme="dark"] .fi:focus,html[data-theme="dark"] .cfg-add input:focus,h
       <button class="sh-btn" onclick="setShift('PM')" id="bPM">PM</button>
     </div>
   </div>
-  <div id="shiftPulse" style="font-size:14px;font-weight:700;padding:8px 0 4px;color:var(--sage)"><span id="progHype"></span></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:8px 0 4px">
+    <span id="phaseIndicator" style="display:none;background:var(--sage);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap"></span>
+    <span id="progHype" style="font-size:14px;font-weight:700;color:var(--sage)"></span>
+  </div>
+  <div style="padding:0 0 4px">
+    <span id="lastActionChip" style="display:none;font-size:11px;color:var(--text-muted);background:var(--sage-soft);padding:3px 10px;border-radius:12px;letter-spacing:0.3px"></span>
+  </div>
 </div>
+
+<div id="historyHints" style="display:none;padding:8px var(--pad) 0;background:var(--cream)"></div>
 
 <div class="sbar">
   <div class="spill" id="sConn"><span id="cDot">&#9679;</span> <span id="cTxt">Online</span></div>
@@ -1086,7 +1115,7 @@ const MENU={
 };
 
 // -- PREP TEMPLATES (editable in Settings) --
-const PREP_TEMPLATES={'Sauces':['Aioli','BBQ Sauce','FrogBurger Sauce','Mayonnaise','Mustard','Pesto Mayo','Onion Jam','Sesame Mayo','Sweet Chilli BBQ','Ketchup refill'],'Meats':['Chicken Burger portions','Chicken Tenders','Chicken for Loaded Fries','Chicken Quesadillas','Pulled Pork balls','Bacon','Fish + Batter','Steaks ready'],'Veggies & Salads':['Iceberg Salad','Rocket','Coleslaw','Coleslaw dry mix','Fries stocked','Sweet Potato Fries','Pickles','Onion sliced','Carotte rape','Guacamole'],'Desserts':['NY Cheesecake portions','Brownie','Cookie','Churros','Chocolate Mousse','Apple Pie portions'],'Snacks':['Nachos','Wings','Mozza Sticks','Gyoza Veggies','Corn Fritters','Cheese Sauce'],'Defrosting':['Guacamole (fridge)','Tortillas (fridge)','Pulled Pork (fridge)','Ribs (fridge)','Salmon (fridge)','Buns (fridge)']};
+const PREP_TEMPLATES={'Sauces':['Aioli','BBQ Sauce','FrogBurger Sauce','Mayonnaise','Cesar sauce','Pesto Mayo','Sesame Mayo','Sriracha mayo','Lime mayo','Tartar sauce','Coconut raita','Vegan Sauce','Peanut butter sauce','Wings sauce','Ribs Glaze','White chocolate sauce','Salsa sauce','Cheese Sauce','Onion Jam','Ketchup refill'],'Meats':['Chicken Burger portions','Chicken Tenders','Chicken for Loaded Fries','Chicken Quesadillas','Chicken tikka','Poached chicken','Pulled Pork balls','Bacon','Fish + Batter','Steaks ready','Salmon portions','Ribs prep'],'Veggies & Salads':['Iceberg - sliced','Romaine - washed','Roquette - washed','Coleslaw - dressed','Coleslaw - no sauce','Pickled red onions','Red onion chopped','Red pepper slices','Chou rouge mariné','Chickpea salad','Potato salad','Cherry tomatoes cut','Cucumber diced','Cucumber kimchi','Coriander chopped','Spring onions chopped','Guacamole','Salsa maison','Pomegranate seeds'],'Desserts':['NY Cheesecake portions','Chocolate Mousse','Caramel Apple pie','Oreo stack','Waffles','Coulis framboise','Raspberries','M&Ms crushed','Oreo crushed'],'Snacks':['Nachos','Wings + batter','Mozza Sticks','Sweetcorn balls mix','Panko mushrooms','Panko Egg','Crispy chickpeas','Crispy noodles','Poppadoms','Quesadillas','Parmesan copeaux','Croutons','Smoked paprika flour','Fish batter','Fries blanched'],'Defrosting':['Guacamole (fridge)','Tortillas (fridge)','Pulled Pork (fridge)','Ribs (fridge)','Salmon (fridge)','Buns (fridge)','Hot dog breads (fridge)','NY Club Bread (fridge)','Chapatis (fridge)','Nachos (fridge)','Avocado slices (fridge)','Chicken pre-cooked (fridge)'],'Rice & Curry':['Cooked rice','Chana masala prep','Chicken tikka prep','Curry topping','Falafel mix','Chapatis']};
 
 let S={d:'',sh:'AM',team:[],e86:[],comms:[],preps:[],dels:[],stC:{},clC:{},psC:{},ho:{c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:''},allergens:[],equip:[],plan:{a:'',b:'',c:''},feedback:[],clAssign:{},stickies:[]};
 let undoStack=null,undoTimer=null,toastTimer=null;
@@ -1102,8 +1131,22 @@ const PRE_SVC=['Prep done for service','Plates ready and stacked','Steak drainin
 const CL_ZONES={'Grill & Cooking':['Grill: scrape + clean (DMS, cold/warm only)','Grill drip tray cleaned','Fryer: check oil quality (tester) + log','Fryer: filter oil','Microwave: wipe inside + outside (LLVM)','Bain-marie: empty + clean end of shift (LLVM)','Salamander: wipe + check (DMS)'],'Surfaces & Floors':['Prep surfaces: clean + disinfect (SOD 390 — gloves!)','Inox surfaces: clean + dry (LLVM)','Cutting boards: clean + sanitise (SOD)','Floor: sweep','Floor: mop (LLVM 1 lid/2L)','Walls/tiles: wipe splashes (SOD)','Shelving: wipe + organise'],'Cold Storage':['Walk-in fridge: wipe shelves (SOD)','Walk-in fridge: check ALL DLC stickers','Walk-in fridge: record temp on Trail (<=4C)','Base fridges: wipe + organise + DLC check','Freezer: check + record temp on Trail (<=-18C)','All containers covered + labeled'],'Plonge & Waste':['Dish machine: clean inside + outside (LPM)','Sinks: clean + sanitise','Bins: empty when 3/4 full','Bins: clean + reline (end of shift)','Oil disposal: used oil to blue bidons','Plonge area separate from production'],'Equipment & Hygiene':['Knives: clean + sharpen','Hand wash station: restock soap + paper (check 2x)','Cleaning products: restock if low + check FTs','Thermometer cleaned','Uniform compliance checked']};
 var CLS_ITEMS={'Kitchen Shutdown':['Bain-marie emptied & cleaned','Grill cleaned & scraped','Microwave wiped inside & out','Fryer oil filtered','All surfaces cleaned + SOD','Sauce bottles & containers cleaned'],'Cold Chain':['Fridge/freezer closing temps logged','Hot food cooled & stored properly','All preps labelled with DLC','Walk-in final check (DLC/FIFO/no cardboard/no bins)'],'Records & Handover':['Waste logged','Trail app entries done','Cleaning checklist signed off','Floor swept & mopped','Bins emptied, lids on','Handover notes written']};
 
-// -- DLC REFERENCE (from Kitchen Wall Reference Card) --
-const DLC_REF={'Sauces':[['Aioli','3 days'],['BBQ Sauce','7 days'],['FrogBurger Sauce','3 days'],['Mayonnaise','3 days'],['Mustard','7 days'],['Pesto Mayo','3 days'],['Onion Jam','5 days'],['Sesame Mayo','3 days'],['Sweet Chilli BBQ','7 days'],['Ketchup','7 days'],['Guacamole (defrosted)','2 days']],'Meats':[['Bacon (cooked)','3 days'],['Chicken (raw, marinated)','4 days'],['Chicken (cooked)','3 days'],['Pulled Pork (defrosted)','3 days'],['Fish (battered, raw)','1 day'],['Steaks (raw)','3 days'],['Ribs (defrosted)','3 days'],['Salmon (defrosted)','2 days']],'Defrosted Items':[['Buns','6 days'],['Tortillas','5 days'],['Pulled Pork','3 days'],['Ribs','3 days'],['Salmon','2 days'],['Guacamole','2 days'],['Gyoza','2 days'],['Churros','3 days']],'Desserts':[['Brownie','4 days'],['Cookie','4 days'],['NY Cheesecake (portioned)','3 days'],['Chocolate Mousse','3 days'],['Apple Pie (portioned)','3 days']],'Key Temps':[['Fridge','0-4°C'],['Freezer','-18°C or below'],['Hot hold (bain-marie)','63°C+'],['Reheating','75°C core'],['Cooking (chicken)','75°C core'],['Cooking (burger)','75°C core'],['Danger zone','5-63°C — max 2h']]};
+// -- DLC REFERENCE (from Official Frog DLC Table — 150+ items) --
+// Rules: DLC = fridge 0-4°C unless marked "dry". Defrost ONLY in fridge.
+// Bain-marie preps = throw away end of night. * = from defrost date.
+// DLC sticker date CANNOT exceed original packet date.
+const DLC_REF={
+'Meats':[['Chicken filets (raw)','see label'],['Chicken pre-cooked','4 days*'],['Chicken wings (raw)','see label'],['Chicken wings prepped','3 days'],['Fresh fish when delivered','5 days'],['Poached chicken','3 days'],['Pulled pork','5 days*'],['Ribs','5 days'],['Salmon','3 days'],['Steaks - opened','1 day'],['Bacon - cooked','3 days'],['Bacon - opened','3 days'],['Chicken burgers','3 days']],
+'Sauces - Fresh':[['Aioli','3 days'],['Cesar sauce','3 days'],['Cheese Sauce (fridge)','3 days'],['Cheese Sauce (bain-marie)','1 day'],['Coconut raita','3 days'],['Frogburger sauce','3 days'],['Lime mayo','4 days'],['Mayonnaise','3 days'],['Peanut butter sauce','5 days'],['Pesto mayo','4 days'],['Ribs Glaze','4 days'],['Salsa sauce','3 days'],['Sesame mayo','4 days'],['Sriracha mayo','3 days'],['Tartar sauce','4 days'],['Vegan Sauce','3 days'],['White chocolate sauce','5 days'],['Wings sauce','4 days']],
+'Sauces - Opened':[['BBQ sauce (opened)','7 days'],['French\'s Mustard (opened)','7 days'],['Olive oil & lemon','7 days'],['Sweet Chilli sauce (opened)','7 days']],
+'Sauces - Storage':[['BBQ sauce (storage)','1 month'],['French\'s mustard (storage)','1 month'],['Onion Jam','1 month'],['Sweet chili sauce (storage)','1 month'],['Lemon sauce','1 month'],['Caramel sauce','1 month'],['Chocolate sauce','1 month'],['Ketchup','1 month'],['Dijon Mustard','1 month'],['Sriracha / Hot chili sauce','1 month'],['Worcestershire sauce','see label'],['Tikka masala paste','6 months'],['Mango chutney','6 months']],
+'Preps - Burgers':[['Avocado slices (defrosted, in packet)','3 days*'],['Avocado slices (open packet)','1 day'],['Blue cheese slices','7 days'],['Cheddar fumé sliced','3 days'],['Cheddar slice','3 days'],['Fried onions - dry','1 month'],['Iceberg - sliced','3 days'],['Red onion chopped','3 days'],['Red pepper - grilled','3 days'],['Red pepper - slices','3 days']],
+'Preps - Mains':[['Chana masala prep (bain-marie)','1 day'],['Chana masala prep (fridge)','4 days'],['Chicken tikka (bain-marie)','1 day'],['Chicken tikka (fridge)','3 days'],['Cooked rice','3 days'],['Coleslaw - dressed','2 days'],['Coleslaw - no sauce','3 days'],['Chou rouge mariné','5 days'],['Chickpea salad','2 days'],['Curry topping','1 day'],['Falafel mix, burgers, sausages','3 days'],['Pickled red onions','5 days'],['Pomegranate seeds','3 days'],['Potato salad','2 days'],['Romaine - washed and sliced','3 days'],['Salsa maison','2 days']],
+'Preps - Snacks':[['Cherry tomatoes - cut','2 days'],['Coriander - chopped','2 days'],['Cornichons - chopped','3 days'],['Croutons - dry','2 days'],['Cucumber diced & sliced','2 days'],['Cucumber kimchi','3 days'],['Fish batter','1 day'],['Flour for fish & chips - dry','1 day'],['Fresh chilis - chopped','2 days'],['Fries (Blanched)','1 day'],['Guacamole','3 days*'],['Jalapenos (opened)','3 days'],['Nachos (defrosted)','3 days*'],['Nachos cooked - dry','4 days'],['Panko Egg','2 days'],['Panko mushrooms','3 days'],['Parmesan copeaux','3 days'],['Poppadoms, cooked - dry','2-3 days'],['Quesadillas','3 days'],['Roquette - washed','3 days'],['Smoked paprika flour - dry','1 month'],['Spring onions - chopped','3 days'],['Sweetcorn balls - mix','3 days'],['Sweetcorn balls - pre-cooked','1 day'],['Chicken wings batter','1 day'],['Chicken wings sauce','3 days'],['Mozzerella sticks','3 days'],['Crispy chickpeas - dry','3 days'],['Crispy noodles - dry','2 days'],['Snack powder shake - dry','1 month']],
+'Preps - Desserts':[['Coulis framboise','8 days*'],['Caramel Apple pie','8 days*'],['Chocolate Mousse','6 days*'],['NY Cheesecake','8 days*'],['Oreo stack','5 days*'],['Raspberries','2 days*'],['Waffles','4 days*'],['M&Ms crushed','3 days'],['Oreo crushed','3 days']],
+'Breads':[['All Buns','6 days*'],['Hot dog breads','6 days*'],['NY Club Bread','6 days*'],['Tortillas','5 days*'],['Chapatis','3 days']],
+'Storage Products':[['Ail lamelle / pelé','1 month'],['Anchois','1 month'],['Butter','see label'],['Carottes râpées','3 days'],['Chou rouge / blanc râpé','3 days'],['Corn (open tin)','3 days'],['Cornichons (storage)','1 month'],['Crème fraiche épaisse','5 days'],['Crème fraiche liquide','2 days'],['Crème sucrée "Chantilly"','2 months'],['Eggs','see label'],['Ginger garlic paste','1 month'],['Jalapenos (storage)','1 month'],['Nutella - dry','2 weeks'],['Oils','2 months'],['Panko - dry','1 month'],['Pesto','15 days'],['Puffed Rice - dry','1 month'],['Rice - dry','1 month'],['Spices, seeds - dry','2 months'],['White chocolate chips - dry','see box']],
+'Key Temps':[['Fridge','0-4°C'],['Freezer','-18°C or below'],['Hot hold (bain-marie)','63°C+'],['Reheating','75°C core'],['Cooking (chicken)','75°C core'],['Cooking (burger)','75°C core'],['Danger zone','5-63°C — max 2h']]};
 
 function getDlcData(){if(!CFG.dlcRef){CFG.dlcRef={};for(var k in DLC_REF){if(DLC_REF.hasOwnProperty(k))CFG.dlcRef[k]=DLC_REF[k].map(function(r){return [r[0],r[1]]})}}return CFG.dlcRef}
 function rDlc(){var c=document.getElementById('dlcRef');if(!c)return;var h='';var data=getDlcData();for(var cat in data){if(!data.hasOwnProperty(cat))continue;var items=data[cat];var isTemp=cat==='Key Temps';h+='<div class="dlc-cat"><div class="dlc-cat-t">'+esc(cat)+'<button class="dlc-add-btn" onclick="addDlcItem(\''+cat.replace(/'/g,"\\'")+'\')">+</button></div>';h+='<div class="dlc-grid">';for(var i=0;i<items.length;i++){var name=items[i][0],val=items[i][1];var cls='dlc-val';if(!isTemp){var d=parseInt(val);if(d<=2)cls+=' dlc-urgent';else if(d<=3)cls+=' dlc-warn'}else{cls+=' dlc-temp'}h+='<div class="dlc-row"><span class="dlc-name">'+esc(name)+'</span><input class="dlc-edit" value="'+esc(val)+'" data-dlc="'+esc(cat)+'_'+i+'" onchange="updDlc(\''+cat.replace(/'/g,"\\'")+'\','+i+',this.value)"><button class="dlc-del" onclick="delDlcItem(\''+cat.replace(/'/g,"\\'")+'\','+i+')">&times;</button></div>'}h+='</div></div>'}c.innerHTML=h}
@@ -1129,6 +1172,158 @@ function init(){
   document.getElementById('cfgSecNew').addEventListener('keydown',function(e){if(e.key==='Enter')addSection()});
   document.getElementById('cfgProdName').addEventListener('keydown',function(e){if(e.key==='Enter')addProduct()});
   document.getElementById('cfgSupName').addEventListener('keydown',function(e){if(e.key==='Enter')addSupplier()});
+  requestPersistentStorage();
+  initPhaseSystem();
+  // Restore session state
+  restoreLastAction();
+  var qBtn=document.getElementById('quietBtn');if(qBtn){qBtn.textContent=quietMode?'Calm':'Full';qBtn.title=quietMode?'Animations: calm':'Animations: full'}
+  try{var lastRoute=localStorage.getItem(K+'lastRoute');if(lastRoute&&document.getElementById('sec-'+lastRoute))go(lastRoute)}catch(e){}
+}
+
+/* === PERSISTENT STORAGE — protect Alex's data from iOS eviction === */
+function requestPersistentStorage(){
+  if(navigator.storage&&navigator.storage.persist){
+    navigator.storage.persist().then(function(granted){
+      if(granted)console.log('[Storage] Persistent storage granted — data protected');
+      else console.log('[Storage] Persistent storage not granted — data may be evicted');
+    });
+  }
+}
+
+/* === TIME-AWARE PHASE SYSTEM === */
+/* Frog shift schedule:
+   AM: 07:30 Opening/Prep → 12:00 Service → 15:00 Handover
+   PM: 15:30 Opening/Prep → 18:00 Service → 23:30 Closing → 00:00 End */
+var PHASES={
+  AM:{
+    opening:{start:7.5,end:12,label:'Opening & Prep',cards:['c-start','c-prep','c-del','c-team']},
+    service:{start:12,end:15,label:'Service',cards:['c-uz','c-86','c-alg','c-equip','c-comm']},
+    handover:{start:15,end:15.5,label:'Handover',cards:['c-clean','c-close','c-ho','c-cc']}
+  },
+  PM:{
+    opening:{start:15.5,end:18,label:'Opening & Prep',cards:['c-start','c-prep','c-del','c-team']},
+    service:{start:18,end:23.5,label:'Service',cards:['c-uz','c-86','c-alg','c-equip','c-comm']},
+    closing:{start:23.5,end:24,label:'Closing',cards:['c-clean','c-close','c-ho','c-cc']}
+  }
+};
+var _userOpenedCards={};
+var _currentPhase='';
+
+function getShiftPhase(){
+  var now=new Date();
+  var h=now.getHours()+now.getMinutes()/60;
+  var shift=S.sh||'AM';
+  var phases=PHASES[shift];
+  if(!phases)return null;
+  for(var key in phases){
+    var p=phases[key];
+    if(h>=p.start&&h<p.end)return{key:key,label:p.label,cards:p.cards};
+  }
+  return null;
+}
+
+function initPhaseSystem(){
+  applyPhase();
+  setInterval(applyPhase,5*60*1000);
+}
+
+function applyPhase(){
+  var phase=getShiftPhase();
+  if(!phase)return;
+  if(phase.key===_currentPhase)return;
+  _currentPhase=phase.key;
+  updatePhaseIndicator(phase);
+  autoExpandPhaseCards(phase);
+}
+
+function updatePhaseIndicator(phase){
+  var el=document.getElementById('phaseIndicator');
+  if(!el)return;
+  el.textContent=phase.label;
+  el.style.display='inline-block';
+}
+
+function autoExpandPhaseCards(phase){
+  var allCards=document.querySelectorAll('.sec:first-of-type .cd, #sec-shift .cd, #sec-check .cd, #sec-ho .cd');
+  /* Only auto-collapse/expand on Shift and Checks tabs, and only cards user hasn't manually touched */
+  var relevantCards=['c-uz','c-86','c-alg','c-equip','c-comm','c-start','c-prep','c-del','c-team','c-clean','c-close','c-ho','c-cc','c-presvc'];
+  relevantCards.forEach(function(id){
+    var card=document.getElementById(id);
+    if(!card)return;
+    if(_userOpenedCards[id])return; /* respect user's manual choice */
+    if(phase.cards.indexOf(id)>=0){
+      card.classList.add('open');
+    }else{
+      card.classList.remove('open');
+    }
+  });
+}
+
+/* Track when user manually opens/closes a card — respect their choice */
+var _origTog=typeof tog==='function'?tog:null;
+
+/* === SMART SUGGESTIONS FROM HISTORY === */
+function getHistorySuggestions(){
+  var today=new Date();
+  var dayOfWeek=today.getDay();
+  var suggestions={prep:[],team:[]};
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var key=localStorage.key(i);
+      if(key.indexOf(K)!==0)continue;
+      var raw=localStorage.getItem(key);
+      if(!raw)continue;
+      var saved=JSON.parse(raw);
+      if(!saved||!saved.d)continue;
+      var savedDate=new Date(saved.d);
+      if(savedDate.getDay()!==dayOfWeek)continue;
+      /* Same day of week — extract prep items */
+      if(saved.prep&&saved.prep.length>0){
+        saved.prep.forEach(function(p){
+          if(p.t&&suggestions.prep.indexOf(p.t)<0)suggestions.prep.push(p.t);
+        });
+      }
+      /* Extract team members */
+      if(saved.team&&saved.team.length>0){
+        saved.team.forEach(function(t){
+          if(t.n&&suggestions.team.indexOf(t.n)<0)suggestions.team.push(t.n);
+        });
+      }
+    }
+  }catch(e){}
+  return suggestions;
+}
+
+function showHistoryHints(){
+  var hints=getHistorySuggestions();
+  if(hints.prep.length===0&&hints.team.length===0)return;
+  var dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var dayName=dayNames[new Date().getDay()];
+  var el=document.getElementById('historyHints');
+  if(!el)return;
+  var h='';
+  if(hints.prep.length>0){
+    h+='<div class="hint-row"><span class="hint-label">Last '+dayName+' preps:</span>';
+    hints.prep.slice(0,6).forEach(function(p){
+      h+='<button class="hint-chip" onclick="addPrepFromHint(\''+p.replace(/'/g,"\\'")+'\')">+ '+p+'</button>';
+    });
+    h+='</div>';
+  }
+  if(hints.team.length>0){
+    h+='<div class="hint-row"><span class="hint-label">Usual '+dayName+' team:</span>';
+    hints.team.slice(0,5).forEach(function(t){
+      h+='<span class="hint-chip hint-info">'+t+'</span>';
+    });
+    h+='</div>';
+  }
+  el.innerHTML=h;
+  el.style.display='block';
+}
+
+function addPrepFromHint(name){
+  S.prep.push({t:name,who:'',dl:'',done:false,late:false});
+  save();renderAll();
+  toast('Added '+name+' from last week — legend');
 }
 
 function sk(){return K+S.d+'_'+S.sh}
@@ -1141,10 +1336,10 @@ function load(){try{var d=localStorage.getItem(sk());if(d){S=JSON.parse(d);if(ty
 function sSave(ok){var p=document.getElementById('sSave'),t=document.getElementById('sTxt');p.className='spill '+(ok?'s-ok':'s-off');t.textContent=ok?(navigator.onLine?'Saved':'Saved locally \u2713'):'Save error'}
 function uConn(){var p=document.getElementById('sConn');p.className='spill '+(navigator.onLine?'s-on':'s-off');p.innerHTML=(navigator.onLine?'&#9679; Online':'&#9679; Offline')}
 
-function go(n){save();document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('act')});document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('act')});var sec=document.getElementById('sec-'+n);if(sec)sec.classList.add('act');var nav=document.getElementById('n-'+n);if(nav)nav.classList.add('act');window.scrollTo(0,0)}
+function go(n){save();document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('act')});document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('act')});var sec=document.getElementById('sec-'+n);if(sec)sec.classList.add('act');var nav=document.getElementById('n-'+n);if(nav)nav.classList.add('act');window.scrollTo(0,0);try{localStorage.setItem(K+'lastRoute',n)}catch(e){}}
 function setShift(s){save();S.sh=s;document.getElementById('bAM').classList.toggle('act',s==='AM');document.getElementById('bPM').classList.toggle('act',s==='PM');load();renderAll()}
 function chgDate(){save();S.d=document.getElementById('shiftDate').value;load();renderAll()}
-function tog(id){document.getElementById(id).classList.toggle('open')}
+function tog(id){var el=document.getElementById(id);el.classList.toggle('open');_userOpenedCards[id]=true}
 function scrollToCard(id){var el=document.getElementById(id);if(!el)return;if(!el.classList.contains('open'))el.classList.add('open');el.scrollIntoView({behavior:'smooth',block:'start'})}
 
 function renderAll(){rTeam();r86();rComms();rPreps();rDels();rSt();rPs();rCl();rCls();rHo();rHist();rAlg();rEq();rPlan();rFeedback();rDlc();rAlgRef();uBadges();uProg();r86Hist();uUrgent()}
@@ -1205,7 +1400,10 @@ function add86(){var inp=document.getElementById('e86I');var v=inp.value.trim();
   var reason=e86Reason||'';var urgency=e86Urgency||'';
   if(prod){S.e86.push({n:prod.n,buy:prod.buy||0,sell:prod.sell||0,cat:prod.cat||'',ts:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),reason:reason,urgency:urgency})}
   else{S.e86.push({n:v,buy:0,sell:0,cat:'',ts:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),reason:reason,urgency:urgency})}
-  inp.value='';e86Reason='';e86Urgency='';enrich86Idx=-1;renderReasonPicker();renderUrgencyPicker();document.getElementById('e86Sug').classList.remove('show');sugCat=null;r86();r86Hist();save();vib();uUrgent();syncSticky86(S.e86.length-1);toast('Flagged ✨')}
+  inp.value='';e86Reason='';e86Urgency='';enrich86Idx=-1;renderReasonPicker();renderUrgencyPicker();document.getElementById('e86Sug').classList.remove('show');sugCat=null;r86();r86Hist();save();vib();uUrgent();syncSticky86(S.e86.length-1);
+  var autoR={comms:true,badge:true};
+  if(prod&&prod.sell>0)autoR.loss='-€'+prod.sell.toFixed(2);
+  rewardToast(v+' 86\'d',autoR)}
 function d86(i){var item=S.e86.splice(i,1)[0];removeSticky('86',i);r86();r86Hist();save();uUrgent();rComms();pushUndo('86',{i:i,item:item},'86\'d item removed')}
 var enrich86Idx=-1;
 function enrich86(i){if(enrich86Idx===i){enrich86Idx=-1;e86Reason='';e86Urgency='';renderReasonPicker();renderUrgencyPicker();r86();toast('Deselected');return}enrich86Idx=i;var item=S.e86[i];if(!item||typeof item!=='object')return;e86Reason=item.reason||'';e86Urgency=item.urgency||'';renderReasonPicker();renderUrgencyPicker();r86();var rp=document.getElementById('e86Reasons');if(rp)rp.scrollIntoView({behavior:'smooth',block:'nearest'});toast((item.n||'Item')+' — tap reason/urgency')}
@@ -1415,19 +1613,19 @@ function gDels(){S.dels.forEach(function(d,i){var s=document.querySelector('[dat
 
 // -- START CHECKS --
 function rSt(){var c=document.getElementById('stL');var dn=Object.keys(S.stC).length;var left=10-dn;c.innerHTML=ST_ITEMS.map(function(item,i){var d=S.stC[i];return '<div class="ci '+(d?'done':'')+'" onclick="tSt('+i+',this)"><div class="cb">'+(d?'&#10003;':'')+'</div><span class="cl">'+item+'</span>'+(d?'<span class="ct">'+d+'</span>':'')+'</div>'}).join('');document.getElementById('stSub').textContent=left===0?'Handled ✨':dn===0?'Start-of-Shift':dn+' sorted ✨';document.getElementById('stB').textContent=left===0?'✨':dn===0?'':dn+'✨';if(left===0){var card=document.getElementById('c-start');if(card&&!card.dataset.glowed){card.classList.add('cd-glow');card.dataset.glowed='1';toast("All sorted — she's locked in ✨");confettiBurst(card)}}document.getElementById('stB').style.background=left===0?'var(--green-soft)':'var(--yellow-soft)';document.getElementById('stB').style.color=left===0?'var(--green-dk)':'var(--black)'}
-function tSt(i,el){if(S.stC[i])delete S.stC[i];else{S.stC[i]=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});if(el){el.classList.add('pop');setTimeout(function(){el.classList.remove('pop')},400)}vib()}rSt();save();uBadges();uProg()}
+function tSt(i,el){if(S.stC[i])delete S.stC[i];else{S.stC[i]=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});var done=Object.keys(S.stC).length;var tier=done===ST_ITEMS.length?'milestone':done===Math.ceil(ST_ITEMS.length/2)?'milestone':'routine';celebrateCheck(el,tier);vib();logLastAction('Start check: '+ST_ITEMS[i]);if(done===ST_ITEMS.length){toast('All start checks done — kitchen is YOURS',3000)}else if(done===Math.ceil(ST_ITEMS.length/2)){toast('First half sorted',2000)}}rSt();save();uBadges();uProg()}
 
 // -- PRE-SERVICE READY --
 function rPs(){var c=document.getElementById('psL');if(!S.psC)S.psC={};var dn=Object.keys(S.psC).length;var left=PRE_SVC.length-dn;c.innerHTML=PRE_SVC.map(function(item,i){var d=S.psC[i];return '<div class="ci '+(d?'done':'')+'" onclick="tPs('+i+',this)"><div class="cb">'+(d?'&#10003;':'')+'</div><span class="cl">'+item+'</span>'+(d?'<span class="ct">'+d+'</span>':'')+'</div>'}).join('');document.getElementById('psSub').textContent=left===0?'Service ready \u{1F525}':dn===0?'Pre-Service':dn+' locked in \u{1F525}';document.getElementById('psB').textContent=left===0?'\u{1F525}':dn===0?'':dn+'\u{1F525}';if(left===0){var card=document.getElementById('c-presvc');if(card&&!card.dataset.glowed){card.classList.add('cd-glow');card.dataset.glowed='1';toast("Service ready, let's go \u{1F525}");confettiBurst(card)}}document.getElementById('psB').style.background=left===0?'var(--green-soft)':'var(--teal-soft)';document.getElementById('psB').style.color=left===0?'var(--green-dk)':'var(--teal)'}
-function tPs(i,el){if(S.psC[i])delete S.psC[i];else{S.psC[i]=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});if(el){el.classList.add('pop');setTimeout(function(){el.classList.remove('pop')},400)}vib()}rPs();save();uProg()}
+function tPs(i,el){if(S.psC[i])delete S.psC[i];else{S.psC[i]=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});var done=Object.keys(S.psC).length;var tier=done===PRE_SVC.length?'milestone':'routine';celebrateCheck(el,tier);vib();logLastAction('Pre-service: '+PRE_SVC[i]);if(done===PRE_SVC.length){toast('Pre-service locked in — let\'s go',3000)}}rPs();save();uProg()}
 
 // -- CLEANING --
 function rCl(){var c=document.getElementById('clL');if(!S.clAssign)S.clAssign={};var h='',tot=0,dn=0;for(var z in CL_ZONES){if(!CL_ZONES.hasOwnProperty(z))continue;var its=CL_ZONES[z];var za=S.clAssign[z]||{};h+='<div class="zh">'+z+'<div class="cl-assign-row"><select class="cl-zone-assign" data-cza="'+esc(z)+'" onchange="setClAssign(\''+z.replace(/'/g,"\\'")+'\',this.value)">'+teamOpts(za.who)+'</select><input type="time" class="cl-zone-by" value="'+esc(za.by||'')+'" data-czb="'+esc(z)+'" onchange="setClBy(\''+z.replace(/'/g,"\\'")+'\',this.value)"></div></div>';its.forEach(function(item,i){var k=z+'_'+i;var d=S.clC[k];tot++;if(d)dn++;h+='<div class="ci '+(d?'done':'')+'" onclick="tCl(\''+k.replace(/'/g,"\\'")+'\',this)"><div class="cb">'+(d?'&#10003;':'')+'</div><span class="cl">'+item+'</span>'+(d?'<span class="ct">'+d+'</span>':'')+'</div>'})}c.innerHTML=h;var pct=tot?Math.round(dn/tot*100):0;var clLeft=tot-dn;document.getElementById('clSub').textContent=clLeft===0?'Spotless \u{1F451}':dn===0?'Daily Cleaning':dn+' wiped \u{1F451}';document.getElementById('clB').textContent=clLeft===0?'\u{1F451}':dn===0?'':dn+'\u{1F451}';if(clLeft===0){var card=document.getElementById('c-clean');if(card&&!card.dataset.glowed){card.classList.add('cd-glow');card.dataset.glowed='1';toast('Spotless. She\'s disgusting \u{1F451}')}}document.getElementById('clB').style.background=pct===100?'var(--green-soft)':'var(--purple-soft)';document.getElementById('clB').style.color=pct===100?'var(--green-dk)':'var(--purple)'}
-function rCls(){var card=document.getElementById('c-closing');if(!card)return;var isPM=S.sh==='PM';card.classList.toggle('pm-vis',isPM);if(!isPM)return;var c=document.getElementById('clsL');if(!S.clsC)S.clsC={};var h='',tot=0,dn=0;for(var g in CLS_ITEMS){if(!CLS_ITEMS.hasOwnProperty(g))continue;var its=CLS_ITEMS[g];h+='<div class="cls-grp">'+g+'</div>';its.forEach(function(item,i){var k=g+'_'+i;var d=S.clsC[k];tot++;if(d)dn++;h+='<div class="clsi '+(d?'done':'')+'" onclick="tCls(\''+k.replace(/'/g,"\\\'")+'\')"><div class="cb">'+(d?'&#10003;':'')+'</div><span class="cls-txt">'+item+'</span>'+(d?'<span class="ct">'+d+'</span>':'')+'</div>'})}c.innerHTML=h;var clsLeft=tot-dn;document.getElementById('clsSub').textContent=clsLeft===0?'Kitchen locked down \u{1F512}':dn===0?'PM only':dn+' done';document.getElementById('clsB').textContent=clsLeft===0?'\u{1F512}':dn===0?'':dn+'\u2728';document.getElementById('clsB').style.background=clsLeft===0?'var(--green-soft)':'var(--coral-soft)';document.getElementById('clsB').style.color=clsLeft===0?'var(--green-dk)':'var(--coral)';if(clsLeft===0){if(!card.dataset.glowed){card.classList.add('cd-glow');card.dataset.glowed='1';toast('Locked. Down. Legend \u{1F512}')}}}
-function tCls(k){if(!S.clsC)S.clsC={};if(S.clsC[k])delete S.clsC[k];else S.clsC[k]=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});save();rCls()}
+function rCls(){var card=document.getElementById('c-closing');if(!card)return;var isPM=S.sh==='PM';card.classList.toggle('pm-vis',isPM);if(!isPM)return;var c=document.getElementById('clsL');if(!S.clsC)S.clsC={};var h='',tot=0,dn=0;for(var g in CLS_ITEMS){if(!CLS_ITEMS.hasOwnProperty(g))continue;var its=CLS_ITEMS[g];h+='<div class="cls-grp">'+g+'</div>';its.forEach(function(item,i){var k=g+'_'+i;var d=S.clsC[k];tot++;if(d)dn++;h+='<div class="clsi '+(d?'done':'')+'" onclick="tCls(\''+k.replace(/'/g,"\\\'")+'\',this)"><div class="cb">'+(d?'&#10003;':'')+'</div><span class="cls-txt">'+item+'</span>'+(d?'<span class="ct">'+d+'</span>':'')+'</div>'})}c.innerHTML=h;var clsLeft=tot-dn;document.getElementById('clsSub').textContent=clsLeft===0?'Kitchen locked down \u{1F512}':dn===0?'PM only':dn+' done';document.getElementById('clsB').textContent=clsLeft===0?'\u{1F512}':dn===0?'':dn+'\u2728';document.getElementById('clsB').style.background=clsLeft===0?'var(--green-soft)':'var(--coral-soft)';document.getElementById('clsB').style.color=clsLeft===0?'var(--green-dk)':'var(--coral)';if(clsLeft===0){if(!card.dataset.glowed){card.classList.add('cd-glow');card.dataset.glowed='1';toast('Locked. Down. Legend \u{1F512}')}}}
+function tCls(k,el){if(!S.clsC)S.clsC={};if(S.clsC[k]){delete S.clsC[k]}else{S.clsC[k]=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});var total=0;for(var cg in CLS_ITEMS)if(CLS_ITEMS.hasOwnProperty(cg))total+=CLS_ITEMS[cg].length;var done=Object.keys(S.clsC).length;var tier=done===total?'milestone':'routine';celebrateCheck(el,tier);vib();logLastAction('Closing: '+k.split('_')[0]);if(done===total)toast('Closing done — shift is WRAPPED',3500)}save();rCls();uProg()}
 function setClAssign(z,v){if(!S.clAssign)S.clAssign={};if(!S.clAssign[z])S.clAssign[z]={};S.clAssign[z].who=v;save()}
 function setClBy(z,v){if(!S.clAssign)S.clAssign={};if(!S.clAssign[z])S.clAssign[z]={};S.clAssign[z].by=v;save()}
-function tCl(k,el){if(S.clC[k])delete S.clC[k];else{S.clC[k]=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});if(el){el.classList.add('pop');setTimeout(function(){el.classList.remove('pop')},400)}vib()}rCl();save();uBadges();uProg()}
+function tCl(k,el){if(S.clC[k])delete S.clC[k];else{S.clC[k]=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});var tc=0;for(var z in CL_ZONES)if(CL_ZONES.hasOwnProperty(z))tc+=CL_ZONES[z].length;var done=Object.keys(S.clC).length;var tier=done===tc?'milestone':'routine';celebrateCheck(el,tier);vib();logLastAction('Cleaned: '+k.split('_')[0]);if(done===tc)toast('Kitchen is spotless — absolute legend',3500)}rCl();save();uBadges();uProg()}
 
 // -- HANDOVER --
 function rHo(){var h=S.ho||{};document.getElementById('hoC').value=h.c||'';document.getElementById('hoN').value=h.n||'';document.getElementById('hoD').value=h.d||'';document.getElementById('hoS').value=h.s||'';document.getElementById('hoE').value=h.e||'';document.getElementById('hoNo').value=h.no||'';document.getElementById('hoK').value=h.k||'';document.getElementById('hoT').value=h.t||''}
@@ -1644,10 +1842,24 @@ function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').repla
 function cp(t){if(navigator.clipboard)navigator.clipboard.writeText(t).catch(function(){fbc(t)});else fbc(t)}
 function fbc(t){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a)}
 function toast(m,dur){clearTimeout(toastTimer);var t=document.getElementById('toast'),msg=document.getElementById('toastMsg');msg.textContent=m;if(!undoStack)document.getElementById('undoBtn').style.display='none';t.classList.add('show');toastTimer=setTimeout(function(){if(!undoStack)t.classList.remove('show')},dur||4500)}
+/* Reward toast — shows what the app DID for her (cheat code feeling) */
+function rewardToast(action,autoResults){
+  var msgs=[];
+  if(autoResults.comms)msgs.push('Salle notified');
+  if(autoResults.loss)msgs.push('Loss tracked ('+autoResults.loss+')');
+  if(autoResults.handover)msgs.push('Handover updated');
+  if(autoResults.badge)msgs.push('Badge updated');
+  if(msgs.length>0){
+    toast(action+' — '+msgs.join(' + '),3500);
+  }else{
+    toast(action,2500);
+  }
+  vib();
+}
 function vib(){try{navigator.vibrate&&navigator.vibrate(10)}catch(e){}}
 
 // -- PREP COMPLETION --
-function togglePrep(i,el){if(S.preps[i].done){S.preps[i].done=false;S.preps[i].doneTs=''}else{S.preps[i].done=true;S.preps[i].doneTs=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});if(el){var card=el.closest('.prep-card');if(card){card.classList.add('pop');setTimeout(function(){card.classList.remove('pop')},400)}confettiBurst(el)}vib()}rPreps();save();uProg()}
+function togglePrep(i,el){if(S.preps[i].done){S.preps[i].done=false;S.preps[i].doneTs=''}else{S.preps[i].done=true;S.preps[i].doneTs=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});if(el){var card=el.closest('.prep-card');if(card){card.classList.add('pop');setTimeout(function(){card.classList.remove('pop')},400)}}celebrateCheck(el,'routine');vib();logLastAction('Prepped: '+(S.preps[i].t||'item'))}rPreps();save();uProg()}
 
 // -- 86'd REASON PICKER --
 function initReasonPicker(){renderReasonPicker();renderUrgencyPicker()}
@@ -1711,8 +1923,35 @@ function rDelegSummary(){var el=document.getElementById('delegSummary');if(!el)r
 // -- SHIFT SUMMARY --
 function rShiftSummary(){var el=document.getElementById('shiftSummary');if(!el)return;var teamCnt=S.team.filter(function(t){return t.n}).length;var prepsDone=S.preps.filter(function(p){return p.t&&p.done}).length;var prepsTotal=S.preps.filter(function(p){return p.t}).length;var delsCnt=S.dels.filter(function(d){return d.su}).length;var algCnt=S.allergens.length;var eqCnt=S.equip.length;var checksDone=Object.keys(S.stC).length;var psDone=S.psC?Object.keys(S.psC).length:0;var tc=0;for(var z in CL_ZONES){if(CL_ZONES.hasOwnProperty(z))tc+=CL_ZONES[z].length}var clDone=Object.keys(S.clC).length;if(teamCnt===0&&prepsTotal===0&&checksDone===0){el.innerHTML='';return}var parts=[];if(teamCnt)parts.push(teamCnt+' minion'+(teamCnt>1?'s':''));if(prepsDone)parts.push(prepsDone+' prep'+(prepsDone>1?'s':'')+' smashed');if(delsCnt)parts.push(delsCnt+' deliver'+(delsCnt>1?'ies':'y'));if(algCnt)parts.push(algCnt+' allergen'+(algCnt>1?'s':'')+' flagged');if(eqCnt)parts.push(eqCnt+' equipment drama'+(eqCnt>1?'s':''));var clsCnt=S.clsC?Object.keys(S.clsC).length:0;var totalChecks=10+PRE_SVC.length+tc;var doneChecks=checksDone+psDone+clDone+clsCnt;if(doneChecks>0)parts.push(doneChecks+' checks sorted');var txt;if(parts.length===0)txt='Getting started \u{2728}';else if(parts.length===1)txt='Today you rolled in with a '+parts[0]+'.';else txt='Today you rolled in with '+parts.join(', ')+'.';var hype='';if(prepsDone>=3&&doneChecks>=5)hype='Good on ya, world eater \u{2728}';else if(prepsDone>=1||doneChecks>=3)hype='Stoked. Daisy era \u{1F525}';el.innerHTML='<div class="shift-summary"><div class="shift-summary-title">\u{1F4CB} Shift Recap</div><div class="shift-summary-text">'+esc(txt)+'</div>'+(hype?'<div class="shift-summary-hype">'+hype+'</div>':'')+'</div>'}
 
-// -- CONFETTI BURST --
-function confettiBurst(el){if(!el)return;var rect=el.getBoundingClientRect();var colors=['#D4836D','#C4933F','#5B8A72','#C27A8A','#5B7FA6','#B5654D'];for(var i=0;i<8;i++){var dot=document.createElement('div');dot.className='confetti-dot';dot.style.background=colors[i%colors.length];dot.style.left=(rect.left+rect.width/2)+'px';dot.style.top=(rect.top+rect.height/2)+'px';dot.style.setProperty('--cx',(Math.random()*60-30)+'px');dot.style.setProperty('--cy',(Math.random()*-50-20)+'px');dot.style.position='fixed';document.body.appendChild(dot);setTimeout(function(d){d.remove()}.bind(null,dot),700)}}
+// -- LAST ACTION CHIP --
+function logLastAction(text){try{var ts=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});var entry={t:text,ts:ts};localStorage.setItem(K+'lastAct',JSON.stringify(entry));var chip=document.getElementById('lastActionChip');if(chip){chip.textContent=text+' · '+ts;chip.style.display='inline-block'}}catch(e){}}
+function restoreLastAction(){try{var raw=localStorage.getItem(K+'lastAct');if(!raw)return;var entry=JSON.parse(raw);var chip=document.getElementById('lastActionChip');if(chip&&entry.t){chip.textContent=entry.t+' · '+entry.ts;chip.style.display='inline-block'}}catch(e){}}
+
+// -- VARIABLE REWARD SYSTEM (AuDHD-optimized) --
+// Research: identical rewards habituate in 2-3 weeks. Variable ratio sustains dopamine response.
+// Three tiers: pulse (routine), confetti (milestone), toast (critical/outcome).
+// Quiet Mode: reduces all animation. Respects prefers-reduced-motion.
+var quietMode=localStorage.getItem(K+'quiet')==='1';
+var rewardCounter=0;
+function isReducedMotion(){return quietMode||window.matchMedia('(prefers-reduced-motion: reduce)').matches}
+function toggleQuiet(){quietMode=!quietMode;localStorage.setItem(K+'quiet',quietMode?'1':'0');var btn=document.getElementById('quietBtn');if(btn)btn.textContent=quietMode?'Calm':'Full';if(btn)btn.title=quietMode?'Animations: calm':'Animations: full'}
+function celebrateCheck(el,tier){
+  // tier: 'routine' | 'milestone' | 'critical'
+  if(!el)return;
+  rewardCounter++;
+  if(isReducedMotion()||tier==='routine'){
+    // Subtle pulse only — no confetti dots
+    el.classList.add('pop');setTimeout(function(){el.classList.remove('pop')},400);
+    return;
+  }
+  // Variable ratio: routine checks get confetti ~40% of the time
+  if(tier!=='milestone'&&tier!=='critical'&&rewardCounter%3!==0){
+    el.classList.add('pop');setTimeout(function(){el.classList.remove('pop')},400);
+    return;
+  }
+  confettiBurst(el);
+}
+function confettiBurst(el){if(!el||isReducedMotion())return;var rect=el.getBoundingClientRect();var palettes=[['#D4836D','#C4933F','#5B8A72','#C27A8A','#5B7FA6','#B5654D'],['#5B8A72','#C4933F','#B5654D','#5B7FA6','#C27A8A','#D4836D'],['#C27A8A','#5B8A72','#C4933F','#5B7FA6','#D4836D','#B5654D']];var colors=palettes[rewardCounter%palettes.length];var count=6+Math.floor(Math.random()*5);for(var i=0;i<count;i++){var dot=document.createElement('div');dot.className='confetti-dot';dot.style.background=colors[i%colors.length];dot.style.left=(rect.left+rect.width/2)+'px';dot.style.top=(rect.top+rect.height/2)+'px';dot.style.setProperty('--cx',(Math.random()*80-40)+'px');dot.style.setProperty('--cy',(Math.random()*-60-20)+'px');dot.style.position='fixed';document.body.appendChild(dot);setTimeout(function(d){d.remove()}.bind(null,dot),700)}}
 
 // -- PRINT SHIFT SHEET --
 function printShiftSheet(){var d=S.d,sh=S.sh;var teamH='';S.team.forEach(function(t){if(t.n)teamH+='<tr><td style="padding:6px 10px;border:1px solid #ccc">'+esc(t.n)+'</td><td style="padding:6px 10px;border:1px solid #ccc">'+esc(t.s)+'</td></tr>'});if(!teamH)for(var i=0;i<4;i++)teamH+='<tr><td style="padding:8px 10px;border:1px solid #ccc">&nbsp;</td><td style="padding:8px 10px;border:1px solid #ccc">&nbsp;</td></tr>';var prepH='';var ap=S.preps.filter(function(p){return p.t});if(ap.length){ap.forEach(function(p){prepH+='<tr><td style="padding:6px;border:1px solid #ccc;width:28px;text-align:center">'+(p.done?'✓':'□')+'</td><td style="padding:6px 10px;border:1px solid #ccc">'+esc(p.t)+'</td><td style="padding:6px 10px;border:1px solid #ccc">'+esc(p.assign||'')+'</td><td style="padding:6px 10px;border:1px solid #ccc">'+esc(p.by||'')+'</td></tr>'})}else{for(var j=0;j<6;j++)prepH+='<tr><td style="padding:8px 6px;border:1px solid #ccc;width:28px">□</td><td style="padding:8px 10px;border:1px solid #ccc">&nbsp;</td><td style="padding:8px 10px;border:1px solid #ccc">&nbsp;</td><td style="padding:8px 10px;border:1px solid #ccc">&nbsp;</td></tr>'}var stH='';ST_ITEMS.forEach(function(item,i){stH+='<tr><td style="padding:5px 6px;border:1px solid #ccc;width:28px;text-align:center">'+(S.stC[i]?'✓':'□')+'</td><td style="padding:5px 10px;border:1px solid #ccc;font-size:12px">'+esc(item)+'</td></tr>'});var clH='';for(var z in CL_ZONES){if(!CL_ZONES.hasOwnProperty(z))continue;clH+='<tr><td colspan="2" style="padding:6px 10px;background:#f5f5f5;font-weight:700;border:1px solid #ccc">'+esc(z)+'</td></tr>';CL_ZONES[z].forEach(function(item,i){var k=z+'_'+i;clH+='<tr><td style="padding:4px 6px;border:1px solid #ccc;width:28px;text-align:center">'+(S.clC[k]?'✓':'□')+'</td><td style="padding:4px 10px;border:1px solid #ccc;font-size:11px">'+esc(item)+'</td></tr>'})}var blankLines='';for(var bl=0;bl<5;bl++)blankLines+='<div style="border-bottom:1px solid #ddd;height:28px;margin-bottom:4px"></div>';var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Shift Sheet</title><style>@page{size:A4;margin:12mm}*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:13px;color:#222;line-height:1.4}h1{font-size:20px;margin-bottom:2px}h2{font-size:14px;margin:12px 0 6px;padding:4px 8px;background:#f0f0f0;border-radius:4px}table{width:100%;border-collapse:collapse;margin-bottom:8px}.hdr{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #222;padding-bottom:8px;margin-bottom:12px}.cols{display:flex;gap:16px}.col{flex:1}</style></head><body><div class="hdr"><div><h1>\u{1F451} Alex\'s Kitchen</h1><div>'+esc(BRAND.venue)+' — '+esc(BRAND.chain)+'</div></div><div style="text-align:right"><div style="font-size:18px;font-weight:700">'+esc(d)+'</div><div style="font-size:16px">'+esc(sh)+' Shift</div></div></div><div class="cols"><div class="col"><h2>\u{1F465} Team</h2><table>'+teamH+'</table><h2>\u{1F4CB} Prep Plan</h2><table><tr style="background:#f5f5f5"><th style="padding:4px;border:1px solid #ccc;width:28px"></th><th style="padding:4px 10px;border:1px solid #ccc;text-align:left">Task</th><th style="padding:4px 10px;border:1px solid #ccc;text-align:left">Who</th><th style="padding:4px 10px;border:1px solid #ccc;text-align:left">By</th></tr>'+prepH+'</table><h2>⚠ 86\'d Items</h2>'+blankLines+'<h2>\u{1F4E3} Comms to Salle</h2>'+blankLines+'<h2>\u{1F69A} Deliveries</h2>'+blankLines+'</div><div class="col"><h2>✅ Start-of-Shift</h2><table>'+stH+'</table><h2>\u{1F9F9} Daily Cleaning</h2><table>'+clH+'</table><h2>\u{1F4DD} Handover Notes</h2><div style="border:1px solid #ccc;border-radius:4px;padding:8px;min-height:80px;font-size:11px;color:#666">Write handover notes here...</div></div></div><div style="margin-top:16px;text-align:center;font-size:10px;color:#aaa">Printed from Alex\'s Kitchen \u{1F451}</div></body></html>';printViaIframe(html)}
@@ -1781,7 +2020,7 @@ function checkShiftOpen(){
   if(!isEmpty)return;
   var prev=getPrevShiftData();var hasCarry=false;
   if(prev){hasCarry=(prev.e86&&prev.e86.length>0)||(prev.equip&&prev.equip.filter(function(e){return !e.resolved}).length>0)}
-  showShiftOpen(prev,hasCarry)}
+  showShiftOpen(prev,hasCarry);showHistoryHints()}
 function showShiftOpen(prev,hasCarry){
   var steps=[];var stepIdx=0;
   // Step 1: Welcome
@@ -1892,14 +2131,17 @@ document.getElementById('sofOverlay').addEventListener('click',function(e){if(e.
 
 // -- KNOWLEDGE INDEX --
 var SOP_REF=[
-{cat:'86 Protocol',title:'Item 86\'d',steps:'Flag it, Salle needs to know \u{1F52A}\nMight be hiding somewhere else\nPOS and next order — you know the vibe',ico:'\u{1F52A}'},
-{cat:'Allergen Protocol',title:'Allergen alert',steps:'Matrix has the answers \u{1F52A}\nClean station, dedicated kit — the usual\nOne last look before it leaves the pass\nNobody dies on your watch, daisy \u{1F4AA}',ico:'\u{1F480}'},
-{cat:'DLC Protocol',title:'DLC reminder',steps:'The holy trinity: item, date prepped, use-by\nOldest at front — FIFO queen \u{1F451}\nWalk-in check catches the sneaky ones\nAnything expired gets binned + logged',ico:'\u{1F4C5}'},
+{cat:'86 Protocol',title:'Item 86\'d',steps:'Flag it, Salle needs to know \u{1F52A}\nMight be hiding somewhere else\nPOS and next order \u2014 you know the vibe',ico:'\u{1F52A}'},
+{cat:'Allergen Protocol',title:'Allergen alert',steps:'Matrix has the answers \u{1F52A}\nClean station, dedicated kit \u2014 the usual\nOne last look before it leaves the pass\nNobody dies on your watch, daisy \u{1F4AA}',ico:'\u{1F480}'},
+{cat:'DLC Protocol',title:'DLC reminder',steps:'The holy trinity: item, date prepped, use-by\nOldest at front \u2014 FIFO queen \u{1F451}\nWalk-in check catches the sneaky ones\nAnything expired gets binned + logged',ico:'\u{1F4C5}'},
 {cat:'Temperature',title:'Temp logging',steps:'Probe, Trail, done \u{1F52A}\nAnything weird? Pull it, log it\nJust covering your back babe',ico:'\u{1F321}'},
-{cat:'Receiving',title:'Delivery check',steps:'Cold chain temps on arrival\nQty, quality — eyes and nose never lie\n15 min to get it stored\nWorld eater energy \u{1F69A}',ico:'\u{1F69A}'},
+{cat:'Receiving',title:'Delivery check',steps:'Cold chain temps on arrival\nQty, quality \u2014 eyes and nose never lie\n15 min to get it stored\nWorld eater energy \u{1F69A}',ico:'\u{1F69A}'},
 {cat:'Equipment',title:'Equipment down',steps:'Power off if it\'s being dramatic \u{1F52A}\nAlternative situation? You\'ll figure it out\nHandover notes so next shift isn\'t blindsided\nTomorrow-you deals with the rest',ico:'\u{1F527}'},
-{cat:'Cleaning',title:'Clean-as-you-go',steps:'Surfaces between tasks — she\'s clean like that \u2728\nFloors when they need it, mop at close\nFryer: daily filter, weekly deep clean\nWalk-in shelves get a weekly wipe',ico:'\u{1F9F9}'},
-{cat:'Handover',title:'Shift handover',steps:'Shift data\'s already in there \u2728\nAnything weird or unfinished? Drop it in\nWho\'s up next?\nThat\'s a wrap \u{1F9DA}',ico:'\u{1F4CB}'}
+{cat:'Cleaning',title:'Clean-as-you-go',steps:'Surfaces between tasks \u2014 she\'s clean like that \u2728\nFloors when they need it, mop at close\nFryer: daily filter, weekly deep clean\nWalk-in shelves get a weekly wipe',ico:'\u{1F9F9}'},
+{cat:'Handover',title:'Shift handover',steps:'Shift data\'s already in there \u2728\nAnything weird or unfinished? Drop it in\nWho\'s up next?\nThat\'s a wrap \u{1F9DA}',ico:'\u{1F4CB}'},
+{cat:'KSM Standards',title:'What good looks like',steps:'Kitchen clean + organised before, during AND after\nTeam briefed: roles, prep, deadlines, events\nDLC checks done \u2014 walk-in, fridges, dry store\nComms to FOH clear + proactive (86s, allergens, timings)\nHandover complete so next shift isn\'t guessing\nPrep plan realistic \u2014 deadlines met, delegation clear',ico:'\u{1F451}'},
+{cat:'KSM Standards',title:'Growth areas to watch',steps:'Confidence under pressure \u2014 own the pass, don\'t defer\nTime management \u2014 prep before panic\nStack attention \u2014 plates out hot, looking right\nWaste tracking \u2014 log it, learn from patterns\nTeam development \u2014 feedback after every shift\nStock ordering \u2014 anticipate, don\'t react',ico:'\u{1F4AA}'},
+{cat:'CSE Prep',title:'CSE readiness',steps:'50-point audit \u2014 know the criteria cold\nCustomer journey: greet < 30s, check back, farewell\nKitchen side: timings, presentation, allergen process\nTrail entries up to date\nCleaning records complete + signed\nNo shortcuts \u2014 if it\'s not logged it didn\'t happen',ico:'\u2b50'}
 ];
 var kiTab='all';
 function openKI(prefilter){document.getElementById('kiOverlay').classList.add('show');kiTab='all';if(prefilter)document.getElementById('kiSearch').value=prefilter;else document.getElementById('kiSearch').value='';kiRender();setTimeout(function(){document.getElementById('kiSearch').focus()},300)}
