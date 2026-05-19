@@ -938,6 +938,23 @@ html[data-theme="dark"] .sof-close-btn{background:#3A2820;border-color:var(--ter
 .del-state-btn.del-checked{background:var(--green-soft,#E8F5E9);color:var(--green-dk,#2E7D32)}
 .del-card.del-checked{opacity:0.7}
 .del-card.del-checked input{text-decoration:line-through}
+
+/* A5 — Cleared state */
+.uz-clear{display:none;width:100%;padding:16px 20px;background:var(--sage-soft);border-radius:var(--radius-md,12px);text-align:center;font-size:var(--fs-base,15px);font-weight:600;color:var(--sage);letter-spacing:0.3px}
+html[data-theme="dark"] .uz-clear{background:var(--black-soft);color:var(--sage)}
+
+/* Comms cards (A2, A2b, C1) */
+.comms-gen-area{margin-top:16px;padding-top:16px;border-top:2px dashed var(--sage-soft)}
+.comms-gen-btn{width:100%;padding:14px 20px;border:none;border-radius:var(--radius-md,12px);font-size:var(--fs-base,15px);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px}
+.comms-gen-btn-primary{background:var(--sage);color:#fff}
+.comms-gen-btn-amber{background:var(--amber);color:#fff}
+.comms-output{margin-top:12px;display:none}
+.comms-output.show{display:block}
+.comms-output textarea{width:100%;min-height:180px;padding:12px;border:2px solid var(--sage-soft);border-radius:var(--radius-md,12px);font-family:inherit;font-size:var(--fs-sm,13px);line-height:1.5;resize:vertical;background:var(--card);color:var(--text)}
+html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);background:var(--black-soft)}
+.comms-copy-row{display:flex;gap:8px;margin-top:8px}
+.comms-paste-btn{width:100%;padding:12px 20px;border:2px dashed var(--amber-soft);border-radius:var(--radius-md,12px);font-size:var(--fs-sm,13px);font-weight:600;cursor:pointer;background:var(--amber-soft);color:var(--amber);min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px}
+.comms-section-label{font-weight:700;font-size:var(--fs-sm,13px);color:var(--sage);margin-bottom:8px;letter-spacing:0.5px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -982,6 +999,7 @@ html[data-theme="dark"] .sof-close-btn{background:#3A2820;border-color:var(--ter
       <div class="uz-cell" onclick="scrollToCard('c-alg')"><div class="uz-num prio-grey" id="uzAlg">0</div><div class="uz-lbl">Allergens</div></div>
       <div class="uz-cell" onclick="scrollToCard('c-86')"><div class="uz-num prio-grey" id="uz86">0</div><div class="uz-lbl">86'd</div></div>
       <div class="uz-cell" onclick="scrollToCard('c-eq')"><div class="uz-num prio-grey" id="uzEq">0</div><div class="uz-lbl">Equipment</div></div>
+      <div class="uz-clear" id="uzClear">All clear. Service is steady.</div>
     </div>
     <div class="uz-next" id="uzNext"></div>
   </div>
@@ -994,6 +1012,10 @@ html[data-theme="dark"] .sof-close-btn{background:#3A2820;border-color:var(--ter
 
   <div class="cd" id="c-eq"><div class="cd-h" onclick="tog('c-eq')"><div class="cd-hl"><div class="cd-ico ico-eq">&#128295;</div><div><div class="cd-t">Equipment Issues</div><div class="cd-st" id="eqN">All smooth</div></div></div><span class="cd-badge" id="eqB" style="display:none;background:var(--amber-soft);color:var(--amber)">0</span><span class="cd-chv">&#9660;</span></div>
     <div class="cd-body"><div id="eqList"></div><button class="abtn" onclick="showEqSheet()" style="border-color:var(--amber);color:var(--amber)">&#128295; Report Issue</button></div></div>
+
+  <!-- A3 — Action Plan -->
+  <div class="cd" id="c-actionplan"><div class="cd-h" onclick="tog('c-actionplan')"><div class="cd-hl"><div class="cd-ico" style="background:var(--amber-soft);color:var(--amber)">&#9889;</div><div><div class="cd-t">Action Plan</div><div class="cd-st" id="apN">No actions yet</div></div></div><span class="cd-badge" id="apB" style="display:none;background:var(--amber-soft);color:var(--amber)">0</span><span class="cd-chv">&#9660;</span></div>
+    <div class="cd-body"><div id="apList"></div><button class="abtn" onclick="addActionItem()" style="border-color:var(--amber);color:var(--amber)">+ Action item</button></div></div>
 
   <div class="cd" id="c-team"><div class="cd-h" onclick="tog('c-team')"><div class="cd-hl"><div class="cd-ico ico-team">&#x1F451;</div><div><div class="cd-t">Team &amp; Sections</div><div class="cd-st" id="teamN">No minions yet &#129527;</div></div></div><span class="cd-chv">&#9660;</span></div>
     <div class="cd-body"><div id="teamL"></div><button class="abtn" onclick="addTeam()">+ Team member</button><div id="planBC" style="margin-top:12px"></div></div></div>
@@ -1059,6 +1081,56 @@ html[data-theme="dark"] .sof-close-btn{background:#3A2820;border-color:var(--ter
         <button class="xbtn" onclick="shareHandover('official')" style="width:100%;background:var(--black);color:var(--cream)">&#128196; Official Report (for documentation)</button>
       </div>
     </div></div>
+  <!-- A2 — KSM Update Generator -->
+  <div class="cd" id="c-ksm-update"><div class="cd-h" onclick="tog('c-ksm-update')"><div class="cd-hl"><div class="cd-ico" style="background:var(--sage-soft);color:var(--sage)">&#9993;</div><div><div class="cd-t">KSM Update</div><div class="cd-st">For Ricardo / Paul</div></div></div><span class="cd-chv">&#9660;</span></div>
+    <div class="cd-body">
+      <div style="font-size:var(--fs-sm);color:var(--text-light);margin-bottom:12px">Generates a professional kitchen update from your shift data. Nicolas Giboulot format.</div>
+      <button class="comms-gen-btn comms-gen-btn-primary" onclick="generateKSMUpdate()">&#9889; Generate KSM Update</button>
+      <div class="comms-output" id="ksmOutput">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Subject line suggestion:</div>
+        <div id="ksmSubject" style="font-weight:700;font-size:var(--fs-sm);color:var(--text);margin-bottom:8px;padding:8px 12px;background:var(--sage-soft);border-radius:8px"></div>
+        <textarea class="fi" id="ksmText" style="min-height:200px;font-size:13px;line-height:1.5" onchange="save()"></textarea>
+        <div class="comms-copy-row">
+          <button class="xbtn xb-primary" onclick="cp(document.getElementById('ksmText').value);toast('Copied. Send it.')" style="flex:1">&#128203; Copy</button>
+          <button class="xbtn" onclick="var s=document.getElementById('ksmSubject').textContent;var b=document.getElementById('ksmText').value;window.location.href='mailto:?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b)" style="flex:1;background:var(--amber);color:#fff">&#9993; Mail app</button>
+        </div>
+      </div>
+    </div></div>
+
+  <!-- A2b — Paul Mail Decoder -->
+  <div class="cd" id="c-paul-decoder"><div class="cd-h" onclick="tog('c-paul-decoder')"><div class="cd-hl"><div class="cd-ico" style="background:var(--amber-soft);color:var(--amber)">&#128270;</div><div><div class="cd-t">Paul Mail Decoder</div><div class="cd-st">What does he actually want?</div></div></div><span class="cd-chv">&#9660;</span></div>
+    <div class="cd-body">
+      <div style="font-size:var(--fs-sm);color:var(--text-light);margin-bottom:12px">Paste Paul's email. Get decoded action points + a draft response.</div>
+      <button class="comms-paste-btn" onclick="pastePaulEmail()">&#128203; Paste from clipboard</button>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-muted);text-align:center">or paste manually below</div>
+      <textarea class="fi" id="paulEmailInput" placeholder="Paste Paul's email here..." style="min-height:100px;margin-top:8px"></textarea>
+      <button class="comms-gen-btn comms-gen-btn-amber" onclick="decodePaulEmail()" style="margin-top:12px">&#128270; Decode</button>
+      <div class="comms-output" id="paulOutput">
+        <div class="comms-section-label" style="margin-top:4px">&#127919; What Paul wants</div>
+        <div id="paulDecoded" style="background:var(--amber-soft);border-radius:12px;padding:12px 16px;font-size:var(--fs-sm);line-height:1.6;color:var(--text);margin-bottom:12px"></div>
+        <div class="comms-section-label">&#9997; Draft response</div>
+        <textarea class="fi" id="paulDraft" style="min-height:160px;font-size:13px;line-height:1.5"></textarea>
+        <div class="comms-copy-row">
+          <button class="xbtn xb-primary" onclick="cp(document.getElementById('paulDraft').value);toast('Draft copied')" style="flex:1">&#128203; Copy draft</button>
+          <button class="xbtn" onclick="cp(document.getElementById('paulDecoded').textContent);toast('Decoded points copied')" style="flex:1;background:var(--amber);color:#fff">&#128203; Copy decoded</button>
+        </div>
+      </div>
+    </div></div>
+
+  <!-- C1 — Weekly Paul Update -->
+  <div class="cd" id="c-weekly-update"><div class="cd-h" onclick="tog('c-weekly-update')"><div class="cd-hl"><div class="cd-ico" style="background:var(--blue-soft);color:var(--blue)">&#128202;</div><div><div class="cd-t">Weekly Update</div><div class="cd-st">Week summary for Paul</div></div></div><span class="cd-chv">&#9660;</span></div>
+    <div class="cd-body">
+      <div style="font-size:var(--fs-sm);color:var(--text-light);margin-bottom:12px">Aggregates this week's shift data into a structured update for Paul.</div>
+      <button class="comms-gen-btn comms-gen-btn-primary" onclick="generateWeeklyUpdate()" style="background:var(--blue)">&#128202; Generate weekly update</button>
+      <div class="comms-output" id="weeklyOutput">
+        <textarea class="fi" id="weeklyText" style="min-height:240px;font-size:13px;line-height:1.5"></textarea>
+        <div class="comms-copy-row">
+          <button class="xbtn xb-primary" onclick="cp(document.getElementById('weeklyText').value);toast('Weekly update copied')" style="flex:1">&#128203; Copy</button>
+          <button class="xbtn" onclick="var b=document.getElementById('weeklyText').value;window.location.href='mailto:?subject='+encodeURIComponent('Hop House Kitchen — Weekly Update')+'&body='+encodeURIComponent(b)" style="flex:1;background:var(--amber);color:#fff">&#9993; Mail app</button>
+        </div>
+      </div>
+    </div></div>
+
   <div class="cd" id="c-fb"><div class="cd-h" onclick="tog('c-fb')"><div class="cd-hl"><div class="cd-ico">&#9733;</div><div><div class="cd-t">Team Feedback</div><div class="cd-st" id="fbSub">The crew \u{1F52A}</div></div></div><span class="cd-chv">&#9660;</span></div>
     <div class="cd-body"><div id="fbSaved"></div><div id="fbForm"></div></div></div>
 
@@ -1197,7 +1269,7 @@ html[data-theme="dark"] .sof-close-btn{background:#3A2820;border-color:var(--ter
   </div>
 </div>
 
-<datalist id="dlNames"></datalist><datalist id="dlSections"></datalist><datalist id="dlProducts"></datalist><datalist id="dlSuppliers"></datalist><datalist id="dlPreps"></datalist><datalist id="dlAmts"><option value="S.Bac"><option value="M.Bac"><option value="L.Bac"><option value="1x Bac"><option value="2x Bac"><option value="3x Bac"><option value="1x Bac x2"><option value="20L"><option value="10L"><option value="5L"><option value="1L"><option value="1x GN"><option value="2x GN"></datalist>
+<datalist id="dlNames"></datalist><datalist id="dlSections"></datalist><datalist id="dlProducts"></datalist><datalist id="dlSuppliers"></datalist><datalist id="dlPreps"></datalist><datalist id="dlAmts"></datalist>
 <datalist id="dlEquip"><option value="Fryer 1"><option value="Fryer 2"><option value="Grill"><option value="Oven"><option value="Salamander"><option value="Microwave"><option value="Bain-marie"><option value="Walk-in fridge"><option value="Walk-in freezer"><option value="Base fridge 1"><option value="Base fridge 2"><option value="Dishwasher"><option value="Ice machine"><option value="Blender"><option value="Robot coupe"><option value="Thermometer"><option value="Extraction hood"><option value="Hand wash station"><option value="Hot water"><option value="Gas line"><option value="Plonge sink"></datalist>
 <script>
 // -- SERVICE WORKER REGISTRATION --
@@ -1235,10 +1307,14 @@ let CFG={roster:[],sections:['Grill','Cold','Prep','Plonge','Pass','Runner'],pro
 function loadCfg(){try{var d=localStorage.getItem(CFG_KEY);if(d){var p=JSON.parse(d);CFG.roster=p.roster||[];if(p.sections&&p.sections.length)CFG.sections=p.sections;CFG.products=p.products||[];CFG.suppliers=p.suppliers||[];CFG.theme=p.theme||(window.matchMedia&&window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');if(p.dlcRef)CFG.dlcRef=p.dlcRef;if(p.algRef)CFG.algRef=p.algRef;if(p.prepTemplates)CFG.prepTemplates=p.prepTemplates}if(!CFG.suppliers.length&&!CFG.products.length)seedDefaults();applyTheme()}catch(e){}}
 function seedDefaults(){
   CFG.suppliers=[
-    {n:'Passionfroid',prods:[]},
-    {n:'LR Food',prods:[]},
-    {n:'Dipsa',prods:['Beer-Battered Fish & Chips']},
-    {n:'Sycaff',prods:[]}
+    {n:'Passionfroid',prods:[],note:'Preset — Alex to verify/edit'},
+    {n:'LR Food',prods:[],note:'Preset — Alex to verify/edit'},
+    {n:'Dipsa',prods:['Beer-Battered Fish & Chips'],note:'Preset — Alex to verify/edit'},
+    {n:'Sycaff',prods:[],note:'Preset — Alex to verify/edit'},
+    {n:'Terazur',prods:[],note:'Preset — Alex to verify/edit'},
+    {n:'Nadaud',prods:[],note:'Preset — Alex to verify/edit'},
+    {n:'Diba',prods:[],note:'Preset — Alex to verify/edit'},
+    {n:'Bodamya',prods:[],note:'Preset — Alex to verify/edit'}
   ];
   var cats={'Bowls':'Bowls','Frog Favourites':'Mains','Burgers':'Burgers','Sharing':'Sharing','Desserts':'Desserts','Sides':'Sides','Kids':'Kids'};
   for(var cat in MENU){if(!MENU.hasOwnProperty(cat))continue;MENU[cat].forEach(function(item){CFG.products.push({n:item,cat:cats[cat]||cat,buy:0,sell:0})})}
@@ -1272,7 +1348,7 @@ const MENU={
 // -- PREP TEMPLATES (editable in Settings) --
 const PREP_TEMPLATES={'Sauces':['Aioli','BBQ Sauce','FrogBurger Sauce','Mayonnaise','Cesar sauce','Pesto Mayo','Sesame Mayo','Sriracha mayo','Lime mayo','Tartar sauce','Coconut raita','Vegan Sauce','Peanut butter sauce','Wings sauce','Ribs Glaze','White chocolate sauce','Salsa sauce','Cheese Sauce','Onion Jam','Ketchup refill'],'Meats':['Chicken Burger portions','Chicken Tenders','Chicken for Loaded Fries','Chicken Quesadillas','Chicken tikka','Poached chicken','Pulled Pork balls','Bacon','Fish + Batter','Steaks ready','Salmon portions','Ribs prep'],'Veggies & Salads':['Iceberg - sliced','Romaine - washed','Roquette - washed','Coleslaw - dressed','Coleslaw - no sauce','Pickled red onions','Red onion chopped','Red pepper slices','Chou rouge mariné','Chickpea salad','Potato salad','Cherry tomatoes cut','Cucumber diced','Cucumber kimchi','Coriander chopped','Spring onions chopped','Guacamole','Salsa maison','Pomegranate seeds'],'Desserts':['NY Cheesecake portions','Chocolate Mousse','Caramel Apple pie','Oreo stack','Waffles','Coulis framboise','Raspberries','M&Ms crushed','Oreo crushed'],'Snacks':['Nachos','Wings + batter','Mozza Sticks','Sweetcorn balls mix','Panko mushrooms','Panko Egg','Crispy chickpeas','Crispy noodles','Poppadoms','Quesadillas','Parmesan copeaux','Croutons','Smoked paprika flour','Fish batter','Fries blanched'],'Defrosting':['Guacamole (fridge)','Tortillas (fridge)','Pulled Pork (fridge)','Ribs (fridge)','Salmon (fridge)','Buns (fridge)','Hot dog breads (fridge)','NY Club Bread (fridge)','Chapatis (fridge)','Nachos (fridge)','Avocado slices (fridge)','Chicken pre-cooked (fridge)'],'Rice & Curry':['Cooked rice','Chana masala prep','Chicken tikka prep','Curry topping','Falafel mix','Chapatis']};
 
-let S={d:'',sh:'AM',team:[],e86:[],comms:[],preps:[],dels:[],stC:{},clC:{},psC:{},ho:{c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:'',tasks:'',cleanCalm:'',resas:'',specials:''},allergens:[],equip:[],plan:{a:'',b:'',c:''},feedback:[],clAssign:{},stickies:[]};
+let S={d:'',sh:'AM',team:[],e86:[],comms:[],preps:[],dels:[],stC:{},clC:{},psC:{},ho:{c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:'',tasks:'',cleanCalm:'',resas:'',specials:''},allergens:[],equip:[],plan:{a:'',b:'',c:''},feedback:[],clAssign:{},stickies:[],actionPlan:[]};
 let undoStack=null,undoTimer=null,toastTimer=null;
 let algSev='critical',eqPrio='red',algSel=[],e86Reason='',e86Urgency='';
 const E86_URGENCY=[{id:'before',label:'Before service',ico:'🔴',cls:'sel-red',tag:'urg-before'},{id:'after',label:'After handover',ico:'🟡',cls:'sel-amber',tag:'urg-after'},{id:'later',label:'Another day',ico:'⚪',cls:'sel-grey',tag:'urg-later'}];
@@ -1378,8 +1454,8 @@ function getShiftPhase(){
 }
 
 function initPhaseSystem(){
-  applyPhase();
-  setInterval(applyPhase,5*60*1000);
+  applyPhase();checkBainMarie();
+  setInterval(function(){applyPhase();checkBainMarie()},60*1000);
 }
 
 function applyPhase(){
@@ -1412,6 +1488,44 @@ function autoExpandPhaseCards(phase){
       card.classList.remove('open');
     }
   });
+}
+
+// -- F2: BAIN-MARIE ALARM --
+var _bmShown={};
+function checkBainMarie(){
+  if(!S.bainMarie)S.bainMarie={open:'',refresh:'',disposal:''};
+  var now=new Date();var h=now.getHours(),m=now.getMinutes(),hm=h+m/60;
+  // 11:00 — open check
+  if(hm>=11&&hm<11.25&&!S.bainMarie.open&&!_bmShown.open){
+    _bmShown.open=true;showBMPrompt('open','Bain-marie ready? Check preps at 63°C+','Confirm temps checked and bain-marie is running.')}
+  // 16:30 — refresh
+  if(hm>=16.5&&hm<16.75&&!S.bainMarie.refresh&&!_bmShown.refresh){
+    _bmShown.refresh=true;showBMPrompt('refresh','Bain-marie refresh','Re-temp all preps, top up water level.')}
+  // 23:00+ PM only — disposal
+  if(S.sh==='PM'&&hm>=23&&!S.bainMarie.disposal&&!_bmShown.disposal){
+    _bmShown.disposal=true;showBMPrompt('disposal','Bain-marie end-of-service','Any prep remaining → bin + waste sheet entry.')}
+}
+function showBMPrompt(type,title,msg){
+  var h='<div style="font-size:17px;font-weight:700;margin-bottom:12px">\u{1F525} '+title+'</div>';
+  h+='<div style="font-size:14px;color:var(--text-light);margin-bottom:16px;line-height:1.5">'+msg+'</div>';
+  if(type==='disposal'){h+='<div style="font-size:12px;color:var(--amber);margin-bottom:12px">Tap Done to timestamp. You\'ll be asked to log waste.</div>'}
+  document.getElementById('moT').innerHTML=h;
+  document.getElementById('moM').textContent='';
+  document.getElementById('moOk').textContent='Done';
+  document.getElementById('moOk').onclick=function(){confirmBM(type)};
+  document.getElementById('modal').classList.add('show');vib()
+}
+function confirmBM(type){
+  var ts=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  if(!S.bainMarie)S.bainMarie={};
+  S.bainMarie[type]=ts;save();hideModal();
+  toast('Bain-marie '+type+' logged at '+ts);vib();
+  if(type==='disposal'){setTimeout(function(){
+    if(confirm('Add waste entry for bain-marie disposal?')){
+      go('shift');scrollToCard('c-86');
+      setTimeout(function(){var inp=document.getElementById('e86I');if(inp){inp.value='Bain-marie EOS disposal';inp.focus()}},300)
+    }
+  },400)}
 }
 
 /* Track when user manually opens/closes a card — respect their choice */
@@ -1487,7 +1601,7 @@ var _quotaWarned=false;
 function lsQuotaCheck(){var used=lsSize();var max=5*1024*1024;var pct=max?Math.round(used/max*100):0;if(pct>=90){archiveOldShifts();toast('Storage 90% full — old shifts archived');_quotaWarned=true}else if(pct>=80&&!_quotaWarned){toast('Storage '+pct+'% full — consider exporting a backup');_quotaWarned=true}return pct<95}
 function archiveOldShifts(){var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');if(idx.length<=5)return;var toRemove=idx.slice(5);toRemove.forEach(function(key){localStorage.removeItem(K+key);localStorage.removeItem(K+key+'_bk')});idx=idx.slice(0,5);localStorage.setItem(K+'idx',JSON.stringify(idx))}
 function save(){gAll();S.sv=new Date().toISOString();try{if(!lsQuotaCheck()){toast('Storage full — export a backup from Settings, then delete old shifts',5000);sSave(0);return}localStorage.setItem(sk(),JSON.stringify(S));var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');var key=S.d+'_'+S.sh;if(idx.indexOf(key)===-1){idx.push(key);idx.sort().reverse();localStorage.setItem(K+'idx',JSON.stringify(idx))}sSave(1)}catch(e){if(e.name==='QuotaExceededError'){toast('Storage full — export a backup, then clear old shifts',5000);archiveOldShifts();try{localStorage.setItem(sk(),JSON.stringify(S));sSave(1);return}catch(e2){}}sSave(0)}}
-function load(){try{var d=localStorage.getItem(sk());if(d){S=JSON.parse(d);if(typeof S.comms==='string'){S.comms=S.comms?[{text:S.comms,ts:'migrated'}]:[];}if(!Array.isArray(S.comms))S.comms=[];if(!Array.isArray(S.e86))S.e86=[];if(!Array.isArray(S.allergens))S.allergens=[];if(!Array.isArray(S.equip))S.equip=[];if(Array.isArray(S.preps)){S.preps.forEach(function(p){if(typeof p.done==='undefined')p.done=false;if(typeof p.doneTs==='undefined')p.doneTs='';if(typeof p.assign==='undefined')p.assign='';if(typeof p.by==='undefined')p.by='';if(typeof p.amt==='undefined')p.amt='';if(typeof p.dur==='undefined')p.dur=''})}if(!S.ho)S.ho={c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:''};if(!S.plan)S.plan={a:'',b:'',c:''};if(!Array.isArray(S.feedback))S.feedback=[];if(!S.clAssign)S.clAssign={};if(!S.psC)S.psC={};if(!Array.isArray(S.stickies))S.stickies=[];if(typeof S.shiftOpened==='undefined')S.shiftOpened=false;if(typeof S.shiftClosed==='undefined')S.shiftClosed=false;if(!S.clsC)S.clsC={}}else{S={d:S.d,sh:S.sh,team:[],e86:[],comms:[],preps:[],dels:[],stC:{},clC:{},psC:{},ho:{c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:''},allergens:[],equip:[],plan:{a:'',b:'',c:''},feedback:[],clAssign:{},stickies:[],shiftOpened:false,shiftClosed:false,clsC:{}};var dk=localStorage.getItem(K+'s_ksm');if(dk)S.ho.k=dk}}catch(e){}}
+function load(){try{var d=localStorage.getItem(sk());if(d){S=JSON.parse(d);if(typeof S.comms==='string'){S.comms=S.comms?[{text:S.comms,ts:'migrated'}]:[];}if(!Array.isArray(S.comms))S.comms=[];if(!Array.isArray(S.e86))S.e86=[];if(!Array.isArray(S.allergens))S.allergens=[];if(!Array.isArray(S.equip))S.equip=[];if(Array.isArray(S.preps)){S.preps.forEach(function(p){if(typeof p.done==='undefined')p.done=false;if(typeof p.doneTs==='undefined')p.doneTs='';if(typeof p.assign==='undefined')p.assign='';if(typeof p.by==='undefined')p.by='';if(typeof p.amt==='undefined')p.amt='';if(typeof p.dur==='undefined')p.dur=''})}if(!S.ho)S.ho={c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:''};if(!S.plan)S.plan={a:'',b:'',c:''};if(!Array.isArray(S.feedback))S.feedback=[];if(!S.clAssign)S.clAssign={};if(!S.psC)S.psC={};if(!Array.isArray(S.stickies))S.stickies=[];if(!Array.isArray(S.actionPlan))S.actionPlan=[];if(!S.bainMarie)S.bainMarie={open:'',refresh:'',disposal:''};if(typeof S.shiftOpened==='undefined')S.shiftOpened=false;if(typeof S.shiftClosed==='undefined')S.shiftClosed=false;if(!S.clsC)S.clsC={}}else{S={d:S.d,sh:S.sh,team:[],e86:[],comms:[],preps:[],dels:[],stC:{},clC:{},psC:{},ho:{c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:''},allergens:[],equip:[],plan:{a:'',b:'',c:''},feedback:[],clAssign:{},stickies:[],shiftOpened:false,shiftClosed:false,clsC:{}};var dk=localStorage.getItem(K+'s_ksm');if(dk)S.ho.k=dk}}catch(e){}}
 function sSave(ok){var p=document.getElementById('sSave'),t=document.getElementById('sTxt');p.className='spill '+(ok?'s-ok':'s-off');t.textContent=ok?(navigator.onLine?'Saved':'Saved locally \u2713'):'Save error'}
 function uConn(){var p=document.getElementById('sConn');p.className='spill '+(navigator.onLine?'s-on':'s-off');p.innerHTML=(navigator.onLine?'&#9679; Online':'&#9679; Offline')}
 
@@ -1497,7 +1611,7 @@ function chgDate(){save();S.d=document.getElementById('shiftDate').value;load();
 function tog(id){var el=document.getElementById(id);el.classList.toggle('open');_userOpenedCards[id]=true}
 function scrollToCard(id){var el=document.getElementById(id);if(!el)return;if(!el.classList.contains('open'))el.classList.add('open');el.scrollIntoView({behavior:'smooth',block:'start'})}
 
-function renderAll(){rTeam();r86();rComms();rPreps();rDels();rSt();rPs();rCl();rCls();rHo();rHist();rAlg();rEq();rPlan();rFeedback();rDlc();rAlgRef();uBadges();uProg();r86Hist();uUrgent()}
+function renderAll(){rTeam();r86();rComms();rPreps();rDels();rSt();rPs();rCl();rCls();rHo();rHist();rAlg();rEq();rPlan();rFeedback();rDlc();rAlgRef();rActionPlan();uBadges();uProg();r86Hist();uUrgent()}
 
 // -- ACTIVE ITEMS ZONE --
 function uUrgent(){
@@ -1510,8 +1624,9 @@ function uUrgent(){
   elEq.textContent=nEq;elEq.className='uz-num '+(nEq>0?'prio-amber':'prio-grey');
   var uz=document.getElementById('urgentZone');
   var total=n86+nAlg+nEq;
-  if(total===0){uz.classList.remove('uz-active')}
-  else{uz.classList.add('uz-active')}
+  var uzClear=document.getElementById('uzClear');
+  if(total===0){uz.classList.remove('uz-active');if(uzClear){uzClear.style.display='block';el86.parentElement.style.display='none';elAlg.parentElement.style.display='none';elEq.parentElement.style.display='none'}}
+  else{uz.classList.add('uz-active');if(uzClear){uzClear.style.display='none';el86.parentElement.style.display='';elAlg.parentElement.style.display='';elEq.parentElement.style.display=''}}
   var c86=document.getElementById('c-86'),cAlg=document.getElementById('c-alg'),cEq=document.getElementById('c-eq');
   if(c86)c86.className='cd'+(n86>0?' cd-prio-amber':'');
   if(cAlg)cAlg.className='cd'+(nAlg>0?' cd-prio-red':'');
@@ -1721,15 +1836,21 @@ function reindexStickies(source,deletedIdx){var st=getStickies();st.forEach(func
 function ackStickyAlg(idx){var st=getStickies();st.forEach(function(s){if(s.source==='alg'&&s.sourceIdx===idx)s.ack=true});save();rComms()}
 
 // -- PREPS --
+// A4 — Container-unit picker
+const PREP_UNITS=['S.Bac','M.Bac','L.Bac','Med Bac','Tray','Squeeze bottle','Shaker','pkg','pcs'];
+function parsePrepAmt(s){if(!s)return{qty:1,unit:''};var m=s.match(/^(\d+)\s*[x×]\s*(.+)$/i);if(m)return{qty:parseInt(m[1]),unit:m[2].trim()};for(var i=0;i<PREP_UNITS.length;i++){if(s===PREP_UNITS[i])return{qty:1,unit:PREP_UNITS[i]}}return{qty:1,unit:s}}
+function prepUnitOpts(sel){return '<option value="">--</option>'+PREP_UNITS.map(function(u){return '<option value="'+u+'"'+(sel===u?' selected':'')+'>'+u+'</option>'}).join('')}
+function updPrepAmt(i){var q=document.querySelector('[data-pamtq="'+i+'"]');var u=document.querySelector('[data-pamtu="'+i+'"]');if(!q||!u)return;var qty=parseInt(q.value)||1;var unit=u.value;S.preps[i].amt=unit?(qty>1?qty+' x '+unit:unit):'';save();rPreps()}
+
 function prepStatus(p){if(!p.by||!p.t)return '';if(S.d!==new Date().toISOString().split('T')[0])return '';var now=new Date();var h=parseInt(p.by.split(':')[0]),m=parseInt(p.by.split(':')[1]);var dl=new Date();dl.setHours(h,m,0,0);if(p.done){if(!p.doneTs)return 'prep-ontime';var dh=parseInt(p.doneTs.split(':')[0]),dm=parseInt(p.doneTs.split(':')[1]);var doneTime=new Date();doneTime.setHours(dh,dm,0,0);return doneTime<=dl?'prep-ontime':'prep-late'}var diff=(dl-now)/60000;if(diff<0)return 'prep-over';if(diff<30)return 'prep-soon';return 'prep-ontime'}
 function teamOpts(sel){return '<option value=""'+(sel?'':' selected')+'>--</option>'+S.team.filter(function(t){return t.n}).map(function(t){return '<option value="'+esc(t.n)+'"'+(sel&&sel===t.n?' selected':'')+'>'+esc(t.n)+'</option>'}).join('')}
-function rPreps(){var c=document.getElementById('prepL');if(!S.preps.length){c.innerHTML='<div class="empty-warm"><span class="ew-ico">\u{1F485}</span><span class="ew-msg">Prep list is here when she needs it</span></div>'}else{c.innerHTML=S.preps.map(function(p,i){var st=prepStatus(p);var stLabel=st==='prep-over'?'still going':st==='prep-soon'?'coming up':st==='prep-late'?'done \u2728':st==='prep-ontime'?'on time':'';var pills='';if(p.amt)pills+='<span class="prep-pill prep-pill-amt">'+esc(p.amt)+'</span>';if(p.assign)pills+='<span class="prep-pill prep-pill-who">'+esc(p.assign)+'</span>';if(p.dur)pills+='<span class="prep-pill prep-pill-dur">'+esc(p.dur)+'min</span>';if(p.by)pills+='<span class="prep-pill prep-pill-time">by '+esc(p.by)+'</span>';if(p.done&&p.doneTs)pills+='<span class="prep-pill prep-pill-done">done '+esc(p.doneTs)+'</span>';if(st&&stLabel)pills+='<span class="prep-status '+st+'">'+stLabel+'</span>';var pillsHtml=pills?'<div class="prep-pills">'+pills+'</div>':'';return '<div class="prep-card'+(p.done?' done':'')+'" id="pc'+i+'"><div class="prep-main"><div class="prep-cb" onclick="togglePrep('+i+',this)">'+(p.done?'&#10003;':'')+'</div><div class="prep-info"><input list="dlPreps" class="prep-name" placeholder="What needs prepping?" value="'+esc(p.t)+'" data-pt="'+i+'" onchange="S.preps['+i+'].t=this.value;save()">'+pillsHtml+'</div><div class="prep-expand" onclick="togPrepDet('+i+',this)">&#9662;</div></div><div class="prep-detail" id="pd'+i+'"><div class="prep-detail-grid-4"><div><label>Amount</label><input type="text" list="dlAmts" placeholder="e.g. M.Bac" value="'+esc(p.amt||'')+'" data-pamt="'+i+'" onchange="S.preps['+i+'].amt=this.value;save();rPreps()"></div><div><label>Assigned to</label><select data-pa="'+i+'" onchange="S.preps['+i+'].assign=this.value;save();rPreps()">'+teamOpts(p.assign)+'</select></div><div><label>Duration (min)</label><input type="number" placeholder="30" value="'+esc(p.dur||'')+'" min="1" max="480" data-pdur="'+i+'" onchange="S.preps['+i+'].dur=this.value;save();rPreps()"></div><div><label>Deadline</label><input type="time" value="'+esc(p.by||'')+'" data-pby="'+i+'" onchange="S.preps['+i+'].by=this.value;save();rPreps()"></div></div><div class="prep-actions">'+(i>0?'<button onclick="mvPrep('+i+',-1)">&#9650; Up</button>':'')+(i<S.preps.length-1?'<button onclick="mvPrep('+i+',1)">&#9660; Down</button>':'')+'<button class="prep-act-del" onclick="dPrep('+i+')">&#10005; Remove</button></div></div></div>'}).join('')}var cnt=S.preps.filter(function(p){return p.t}).length;var dn=S.preps.filter(function(p){return p.t&&p.done}).length;var left=cnt-dn;document.getElementById('prepN').textContent=cnt===0?'Ready when you are':left===0?'Prep boss \u{1F485}':dn===0?'Prep Plan':dn+' smashed \u{1F485}';if(left===0&&cnt>0){var card=document.getElementById('c-prep');if(card&&!card.dataset.glowed){card.classList.add('cd-glow');card.dataset.glowed='1';toast('Prep boss era \u{1F485}')}}for(var oi in _openPrepDets){if(_openPrepDets.hasOwnProperty(oi)){var pd=document.getElementById('pd'+oi);var pb=pd?pd.parentNode.querySelector('.prep-expand'):null;if(pd){pd.classList.add('show');if(pb)pb.classList.add('open')}}}rDelegSummary()}
+function rPreps(){var c=document.getElementById('prepL');if(!S.preps.length){c.innerHTML='<div class="empty-warm"><span class="ew-ico">\u{1F485}</span><span class="ew-msg">Prep list is here when she needs it</span></div>'}else{c.innerHTML=S.preps.map(function(p,i){var st=prepStatus(p);var stLabel=st==='prep-over'?'still going':st==='prep-soon'?'coming up':st==='prep-late'?'done \u2728':st==='prep-ontime'?'on time':'';var pills='';if(p.amt)pills+='<span class="prep-pill prep-pill-amt">'+esc(p.amt)+'</span>';if(p.assign)pills+='<span class="prep-pill prep-pill-who">'+esc(p.assign)+'</span>';if(p.dur)pills+='<span class="prep-pill prep-pill-dur">'+esc(p.dur)+'min</span>';if(p.by)pills+='<span class="prep-pill prep-pill-time">by '+esc(p.by)+'</span>';if(p.done&&p.doneTs)pills+='<span class="prep-pill prep-pill-done">done '+esc(p.doneTs)+'</span>';if(st&&stLabel)pills+='<span class="prep-status '+st+'">'+stLabel+'</span>';var pillsHtml=pills?'<div class="prep-pills">'+pills+'</div>':'';return '<div class="prep-card'+(p.done?' done':'')+'" id="pc'+i+'"><div class="prep-main"><div class="prep-cb" onclick="togglePrep('+i+',this)">'+(p.done?'&#10003;':'')+'</div><div class="prep-info"><input list="dlPreps" class="prep-name" placeholder="What needs prepping?" value="'+esc(p.t)+'" data-pt="'+i+'" onchange="S.preps['+i+'].t=this.value;save()">'+pillsHtml+'</div><div class="prep-expand" onclick="togPrepDet('+i+',this)">&#9662;</div></div><div class="prep-detail" id="pd'+i+'"><div class="prep-detail-grid-4"><div><label>Amount</label><div style="display:flex;gap:4px">'+function(){var pa=parsePrepAmt(p.amt);return '<input type="number" min="1" max="99" value="'+pa.qty+'" style="width:50px;text-align:center" data-pamtq="'+i+'" onchange="updPrepAmt('+i+')"><select data-pamtu="'+i+'" onchange="updPrepAmt('+i+')" style="flex:1">'+prepUnitOpts(pa.unit)+'</select>'}()+'</div></div><div><label>Assigned to</label><select data-pa="'+i+'" onchange="S.preps['+i+'].assign=this.value;save();rPreps()">'+teamOpts(p.assign)+'</select></div><div><label>Duration (min)</label><input type="number" placeholder="30" value="'+esc(p.dur||'')+'" min="1" max="480" data-pdur="'+i+'" onchange="S.preps['+i+'].dur=this.value;save();rPreps()"></div><div><label>Deadline</label><input type="time" value="'+esc(p.by||'')+'" data-pby="'+i+'" onchange="S.preps['+i+'].by=this.value;save();rPreps()"></div></div><div class="prep-actions">'+(i>0?'<button onclick="mvPrep('+i+',-1)">&#9650; Up</button>':'')+(i<S.preps.length-1?'<button onclick="mvPrep('+i+',1)">&#9660; Down</button>':'')+'<button class="prep-act-del" onclick="dPrep('+i+')">&#10005; Remove</button></div></div></div>'}).join('')}var cnt=S.preps.filter(function(p){return p.t}).length;var dn=S.preps.filter(function(p){return p.t&&p.done}).length;var left=cnt-dn;document.getElementById('prepN').textContent=cnt===0?'Ready when you are':left===0?'Prep boss \u{1F485}':dn===0?'Prep Plan':dn+' smashed \u{1F485}';if(left===0&&cnt>0){var card=document.getElementById('c-prep');if(card&&!card.dataset.glowed){card.classList.add('cd-glow');card.dataset.glowed='1';toast('Prep boss era \u{1F485}')}}for(var oi in _openPrepDets){if(_openPrepDets.hasOwnProperty(oi)){var pd=document.getElementById('pd'+oi);var pb=pd?pd.parentNode.querySelector('.prep-expand'):null;if(pd){pd.classList.add('show');if(pb)pb.classList.add('open')}}}rDelegSummary()}
 var _openPrepDets={};
 function togPrepDet(i,btn){var d=document.getElementById('pd'+i);if(!d)return;d.classList.toggle('show');if(btn)btn.classList.toggle('open');if(d.classList.contains('show'))_openPrepDets[i]=true;else delete _openPrepDets[i]}
 function addPrep(){S.preps.push({t:'',tm:'',done:false,doneTs:'',assign:'',by:'',amt:'',dur:''});var idx=S.preps.length-1;_openPrepDets[idx]=true;rPreps();save();setTimeout(function(){var last=document.querySelector('[data-pt="'+idx+'"]');if(last)last.focus();var card=document.getElementById('pc'+idx);if(card)card.classList.add('prep-new')},50)}
 function dPrep(i){var item=S.preps.splice(i,1)[0];delete _openPrepDets[i];var updated={};for(var k in _openPrepDets){if(_openPrepDets.hasOwnProperty(k)){var ki=parseInt(k);updated[ki>i?ki-1:ki]=true}}_openPrepDets=updated;rPreps();save();if(item.t)pushUndo('prep',{i:i,item:item},'Prep task removed');else toast('Poof ✨')}
 function mvPrep(i,dir){var j=i+dir;if(j<0||j>=S.preps.length)return;var tmp=S.preps[i];S.preps[i]=S.preps[j];S.preps[j]=tmp;var iOpen=!!_openPrepDets[i],jOpen=!!_openPrepDets[j];if(iOpen)_openPrepDets[j]=true;else delete _openPrepDets[j];if(jOpen)_openPrepDets[i]=true;else delete _openPrepDets[i];rPreps();save();vib()}
-function gPreps(){S.preps.forEach(function(p,i){var t=document.querySelector('[data-pt="'+i+'"]'),a=document.querySelector('[data-pa="'+i+'"]'),b=document.querySelector('[data-pby="'+i+'"]'),am=document.querySelector('[data-pamt="'+i+'"]'),dr=document.querySelector('[data-pdur="'+i+'"]');if(t)p.t=t.value;if(a)p.assign=a.value;if(b)p.by=b.value;if(am)p.amt=am.value;if(dr)p.dur=dr.value})}
+function gPreps(){S.preps.forEach(function(p,i){var t=document.querySelector('[data-pt="'+i+'"]'),a=document.querySelector('[data-pa="'+i+'"]'),b=document.querySelector('[data-pby="'+i+'"]'),dr=document.querySelector('[data-pdur="'+i+'"]');if(t)p.t=t.value;if(a)p.assign=a.value;if(b)p.by=b.value;if(dr)p.dur=dr.value;var q=document.querySelector('[data-pamtq="'+i+'"]'),u=document.querySelector('[data-pamtu="'+i+'"]');if(q&&u){var qty=parseInt(q.value)||1;var unit=u.value;p.amt=unit?(qty>1?qty+' x '+unit:unit):''}})}
 
 // -- PREP TEMPLATES --
 function showPrepTpl(){
@@ -1794,7 +1915,7 @@ function tCl(k,el){if(S.clC[k])delete S.clC[k];else{S.clC[k]=new Date().toLocale
 // -- HANDOVER --
 function rHo(){var h=S.ho||{};document.getElementById('hoC').value=h.c||'';document.getElementById('hoN').value=h.n||'';document.getElementById('hoD').value=h.d||'';document.getElementById('hoS').value=h.s||'';document.getElementById('hoE').value=h.e||'';document.getElementById('hoNo').value=h.no||'';document.getElementById('hoK').value=h.k||'';document.getElementById('hoT').value=h.t||'';var el;if(el=document.getElementById('hoTasks'))el.value=h.tasks||'';if(el=document.getElementById('hoCleanCalm'))el.value=h.cleanCalm||'';if(el=document.getElementById('hoSpecials'))el.value=h.specials||'';if(el=document.getElementById('hoResas'))el.value=h.resas||''}
 function gHo(){S.ho={c:document.getElementById('hoC').value,n:document.getElementById('hoN').value,d:document.getElementById('hoD').value,s:document.getElementById('hoS').value,e:document.getElementById('hoE').value,no:document.getElementById('hoNo').value,k:document.getElementById('hoK').value,t:document.getElementById('hoT').value,tasks:(document.getElementById('hoTasks')||{}).value||'',cleanCalm:(document.getElementById('hoCleanCalm')||{}).value||'',specials:(document.getElementById('hoSpecials')||{}).value||'',resas:(document.getElementById('hoResas')||{}).value||''}}
-function gAll(){gTeam();gPreps();gDels();gHo();gPlan();gFeedback()}
+function gAll(){gTeam();gPreps();gDels();gHo();gPlan();gFeedback();gActionPlan()}
 
 // -- NAV BADGES --
 function uBadges(){var sd=Object.keys(S.stC).length;var tc=0;for(var z in CL_ZONES){if(CL_ZONES.hasOwnProperty(z))tc+=CL_ZONES[z].length}var cd=Object.keys(S.clC).length;var psd=S.psC?Object.keys(S.psC).length:0;var mx=10+tc+PRE_SVC.length;var dn=sd+cd+psd;var b=document.getElementById('nBadge');if(dn===mx){b.style.display='block';b.textContent='✨';b.style.background='var(--green)';b.style.color='#fff'}else if(dn>0){b.style.display='block';b.textContent=dn+'\u2728';b.style.background='var(--yellow)';b.style.color='var(--black)'}else{b.style.display='none'}
@@ -2092,6 +2213,7 @@ function buildTeamHandover(){
   var todoPreps=S.preps.filter(function(p){return p.t&&!p.done}).map(function(p){return p.t});
   todoPreps.forEach(function(p){forNext.push(p+' (not started)')});
   if(ho.cleanCalm&&ho.cleanCalm.trim()){ho.cleanCalm.trim().split('\n').forEach(function(l){if(l.trim())forNext.push(l.trim()+' (when kitchen allows)')})}
+  if(S.actionPlan&&S.actionPlan.length){S.actionPlan.filter(function(a){return a.action&&!a.done}).forEach(function(a){forNext.push('Action: '+a.action+(a.responsible?' ['+a.responsible+']':''))})}
   if(forNext.length){lines.push('\u{1F4CB} STILL ON THE BOARD');forNext.forEach(function(f){lines.push('  • '+f)});lines.push('')}
   // Good to know (specials, resas, stock, comms, notes)
   var goodToKnow=[];
@@ -2147,6 +2269,8 @@ function buildOfficialReport(){
   lines.push('');
   // Team feedback
   if(S.feedback&&S.feedback.length){lines.push('TEAM PERFORMANCE');S.feedback.forEach(function(fb){var tags=fb.tags.map(function(t){var info=FB_TAGS.find(function(x){return x.id===t});return info?info.export:t}).join(', ');lines.push('  '+fb.who+': '+tags+(fb.note?' — '+fb.note:''))});lines.push('')}
+  // Action Plan
+  if(S.actionPlan&&S.actionPlan.length){lines.push('ACTION PLAN');S.actionPlan.forEach(function(a){if(a.action)lines.push('  '+(a.done?'[x]':'[ ]')+' '+a.action+(a.responsible?' ['+a.responsible+']':'')+(a.when?' ('+a.when+')':''))});lines.push('')}
   // Handover / Next shift
   lines.push('HANDOVER NOTES');
   if(ho.tasks&&ho.tasks.trim()){lines.push('Tasks for next shift:');ho.tasks.trim().split('\n').forEach(function(l){if(l.trim())lines.push('  - '+l.trim())})}
@@ -2195,6 +2319,194 @@ function shareHandover(mode){
     printViaIframe(html);
     vib();
   }
+}
+
+// -- A3: ACTION PLAN --
+const AP_WHEN=['This shift','Tonight','This week','Tomorrow','Custom'];
+function rActionPlan(){var c=document.getElementById('apList');if(!c)return;if(!S.actionPlan)S.actionPlan=[];
+  if(!S.actionPlan.length){c.innerHTML='<div class="empty-warm"><span class="ew-ico">&#9889;</span><span class="ew-msg">No action items. Add one when needed.</span></div>';document.getElementById('apN').textContent='No actions yet';var b=document.getElementById('apB');if(b)b.style.display='none';return}
+  var done=S.actionPlan.filter(function(a){return a.done}).length;
+  c.innerHTML=S.actionPlan.map(function(a,i){return '<div class="li" style="flex-direction:column;gap:8px;padding:12px;'+(a.done?'opacity:0.6;':'')+'"><div style="display:flex;align-items:center;gap:8px;width:100%"><div class="cb" onclick="togAP('+i+')" style="cursor:pointer;flex-shrink:0">'+(a.done?'&#10003;':'')+'</div><input class="fi" placeholder="Action" value="'+esc(a.action||'')+'" data-apa="'+i+'" onchange="S.actionPlan['+i+'].action=this.value;save()" style="flex:1;'+(a.done?'text-decoration:line-through':'')+'"><button class="dbtn" onclick="delAP('+i+')">&#10005;</button></div><div style="display:flex;gap:6px;flex-wrap:wrap;padding-left:32px"><select data-apr="'+i+'" onchange="S.actionPlan['+i+'].responsible=this.value;save()" style="flex:1;min-width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--cream-dark);font-size:12px">'+teamOpts(a.responsible)+'</select><select data-apw="'+i+'" onchange="S.actionPlan['+i+'].when=this.value;save()" style="flex:1;min-width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--cream-dark);font-size:12px">'+AP_WHEN.map(function(w){return '<option'+(a.when===w?' selected':'')+'>'+w+'</option>'}).join('')+'</select></div></div>'}).join('');
+  document.getElementById('apN').textContent=done===S.actionPlan.length?'All done':''+S.actionPlan.length+' item'+(S.actionPlan.length>1?'s':'');
+  var b=document.getElementById('apB');if(b){if(S.actionPlan.length){b.style.display='block';b.textContent=S.actionPlan.length-done}else{b.style.display='none'}}}
+function addActionItem(){if(!S.actionPlan)S.actionPlan=[];S.actionPlan.push({action:'',responsible:'',when:'This shift',done:false});rActionPlan();save();var card=document.getElementById('c-actionplan');if(card&&!card.classList.contains('open'))card.classList.add('open');setTimeout(function(){var last=document.querySelector('[data-apa="'+(S.actionPlan.length-1)+'"]');if(last)last.focus()},50)}
+function delAP(i){S.actionPlan.splice(i,1);rActionPlan();save();toast('Action removed')}
+function togAP(i){S.actionPlan[i].done=!S.actionPlan[i].done;rActionPlan();save();if(S.actionPlan[i].done){vib();toast('Done')}}
+function gActionPlan(){S.actionPlan.forEach(function(a,i){var ac=document.querySelector('[data-apa="'+i+'"]'),r=document.querySelector('[data-apr="'+i+'"]'),w=document.querySelector('[data-apw="'+i+'"]');if(ac)a.action=ac.value;if(r)a.responsible=r.value;if(w)a.when=w.value})}
+
+// -- A2: KSM UPDATE GENERATOR (Nicolas Giboulot format) --
+function generateKSMUpdate(){
+  save();gAll();
+  var ho=S.ho||{};
+  var stDone=Object.keys(S.stC).length,stTotal=ST_ITEMS.length;
+  var psDone=S.psC?Object.keys(S.psC).length:0,psTotal=PRE_SVC.length;
+  var tc=0;for(var z in CL_ZONES){if(CL_ZONES.hasOwnProperty(z))tc+=CL_ZONES[z].length}
+  var clDone=Object.keys(S.clC).length;
+  var totalChecks=stTotal+psTotal+tc,doneChecks=stDone+psDone+clDone;
+  var checkPct=totalChecks>0?Math.round(doneChecks/totalChecks*100):0;
+  var totalLoss=0;S.e86.forEach(function(it){if(typeof it==='object'&&it.buy)totalLoss+=it.buy});
+  var totalPreps=S.preps.filter(function(p){return p.t}).length;
+  var donePreps=S.preps.filter(function(p){return p.t&&p.done}).length;
+  var prepPct=totalPreps>0?Math.round(donePreps/totalPreps*100):0;
+  var cookStats={};
+  S.preps.filter(function(p){return p.t&&p.assign}).forEach(function(p){if(!cookStats[p.assign])cookStats[p.assign]={done:0,total:0};cookStats[p.assign].total++;if(p.done)cookStats[p.assign].done++});
+  var eqActive=S.equip.filter(function(e){return !e.resolved}).length;
+  var eqResolved=S.equip.filter(function(e){return e.resolved}).length;
+  var dlcAlerts=ho.d?ho.d.trim().split('\n').filter(function(l){return l.trim()}).length:0;
+  var teamNames=S.team.filter(function(t){return t.n}).map(function(t){return t.n+(t.s?' ('+t.s+')':'')});
+  var subject=BRAND.venue+' Kitchen — '+S.d+' '+S.sh+' Update';
+  var l=[];
+  l.push('Hi,');l.push('');
+  l.push('Please find below the kitchen update for '+S.d+' '+S.sh+' shift.');l.push('');
+  l.push('AUDITS & HYGIENE');
+  l.push('  Checks completed: '+doneChecks+'/'+totalChecks+' ('+checkPct+'%)');
+  l.push('  Start-of-shift: '+stDone+'/'+stTotal);
+  l.push('  Pre-service: '+psDone+'/'+psTotal);
+  l.push('  Cleaning: '+clDone+'/'+tc);l.push('');
+  l.push('STOCK & WASTE');
+  if(S.e86.length){S.e86.forEach(function(it){var n=typeof it==='object'?it.n:it;var reason='';if(typeof it==='object'&&it.reason){var r=E86_REASONS.find(function(r){return r.id===it.reason});if(r)reason=' ('+r.label+')'}var loss=typeof it==='object'&&it.buy>0?' — '+it.buy.toFixed(2)+'€ loss':'';l.push('  86\'d: '+n+reason+loss)});if(totalLoss>0)l.push('  Total buy-price loss: '+totalLoss.toFixed(2)+'€')}
+  else{l.push('  No 86\'d items. Stock levels maintained.')}l.push('');
+  l.push('TEAM & PREP PERFORMANCE');
+  if(teamNames.length)l.push('  Team: '+teamNames.join(', '));
+  l.push('  Prep completion: '+donePreps+'/'+totalPreps+' ('+prepPct+'%)');
+  for(var cook in cookStats){if(!cookStats.hasOwnProperty(cook))continue;var cs=cookStats[cook];l.push('  '+cook+': '+cs.done+'/'+cs.total+' ('+Math.round(cs.done/cs.total*100)+'%)')}l.push('');
+  l.push('FOOD QUALITY & EQUIPMENT');
+  if(dlcAlerts>0)l.push('  DLC alerts: '+dlcAlerts);else l.push('  DLC: No alerts.');
+  if(eqActive>0)l.push('  Equipment issues active: '+eqActive);
+  if(eqResolved>0)l.push('  Equipment issues resolved: '+eqResolved);
+  if(eqActive===0&&eqResolved===0)l.push('  Equipment: All operational.');l.push('');
+  l.push('NEXT SHIFT PRIORITIES');
+  var hasPrio=false;
+  if(ho.tasks&&ho.tasks.trim()){ho.tasks.trim().split('\n').forEach(function(ln){if(ln.trim()){l.push('  • '+ln.trim());hasPrio=true}})}
+  if(ho.n&&ho.n.trim()){ho.n.trim().split('\n').forEach(function(ln){if(ln.trim()){l.push('  • '+ln.trim());hasPrio=true}})}
+  var todoPreps=S.preps.filter(function(p){return p.t&&!p.done});
+  todoPreps.forEach(function(p){l.push('  • Prep: '+p.t+(p.assign?' ['+p.assign+']':''));hasPrio=true});
+  if(S.actionPlan&&S.actionPlan.length){S.actionPlan.filter(function(a){return a.action&&!a.done}).forEach(function(a){l.push('  • Action: '+a.action+(a.responsible?' ['+a.responsible+']':'')+(a.when?' ('+a.when+')':''));hasPrio=true})}
+  if(!hasPrio)l.push('  All priorities addressed this shift.');l.push('');
+  l.push('Any questions, please let me know.');l.push('');
+  l.push((ho.k||'KSM'));l.push(BRAND.venue+' Kitchen');
+  document.getElementById('ksmSubject').textContent=subject;
+  document.getElementById('ksmText').value=l.join('\n');
+  document.getElementById('ksmOutput').classList.add('show');
+  toast('Update generated');vib()
+}
+
+// -- A2b: PAUL MAIL DECODER (Round 1 — prompt template) --
+function pastePaulEmail(){
+  if(navigator.clipboard&&navigator.clipboard.readText){navigator.clipboard.readText().then(function(text){document.getElementById('paulEmailInput').value=text;toast('Pasted')}).catch(function(){toast('Paste manually — clipboard access denied')})}
+  else{toast('Paste manually — clipboard not available')}
+}
+function decodePaulEmail(){
+  var email=document.getElementById('paulEmailInput').value.trim();
+  if(!email){toast('Paste Paul\'s email first');return}
+  save();gAll();var ho=S.ho||{};
+  var ctx=[];
+  ctx.push('Current shift: '+S.d+' '+S.sh);
+  var stDone=Object.keys(S.stC).length;
+  var tc=0;for(var z in CL_ZONES){if(CL_ZONES.hasOwnProperty(z))tc+=CL_ZONES[z].length}
+  var clDone=Object.keys(S.clC).length;
+  ctx.push('Checks: '+stDone+'/'+ST_ITEMS.length+' start, '+clDone+'/'+tc+' cleaning');
+  if(S.e86.length)ctx.push('86\'d today: '+S.e86.map(function(it){return typeof it==='object'?it.n:it}).join(', '));
+  var eqAct=S.equip.filter(function(e){return !e.resolved});
+  if(eqAct.length)ctx.push('Equipment issues: '+eqAct.map(function(e){return e.name+' — '+e.issue}).join('; '));
+  var dp=S.preps.filter(function(p){return p.t&&p.done}).length,tp=S.preps.filter(function(p){return p.t}).length;
+  if(tp)ctx.push('Prep: '+dp+'/'+tp+' done');
+  if(S.actionPlan&&S.actionPlan.length){var apOpen=S.actionPlan.filter(function(a){return a.action&&!a.done});if(apOpen.length)ctx.push('Open actions: '+apOpen.map(function(a){return a.action+(a.responsible?' ['+a.responsible+']':'')}).join('; '))}
+  var prompt=[];
+  prompt.push('I\'m Alex, Kitchen Manager at Frog Hop House (Frog Pubs, Paris). Paul Chantler is CEO of Frog Pubs. He sent me this email. I need to decode it and draft a response.');prompt.push('');
+  prompt.push('=== PAUL\'S EMAIL ===');prompt.push(email);prompt.push('=== END EMAIL ===');prompt.push('');
+  prompt.push('=== PAUL\'S KNOWN COMMUNICATION PATTERNS ===');
+  prompt.push('Decode his email using these confirmed patterns:');
+  prompt.push('- "I\'m surprised" = You failed, one chance to fix it');
+  prompt.push('- "I\'d like to understand" = Explain yourself, you might be in trouble');
+  prompt.push('- "Thoughts?" = He already has the answer, show alignment');
+  prompt.push('- "Just thinking out loud" = This is now policy');
+  prompt.push('- "I\'m disappointed" = Major trust violation, consequences coming');
+  prompt.push('- "If this is so, then it is serious" = Double escalation');
+  prompt.push('- "Let me remind you" = You broke rules you knew. No excuse.');
+  prompt.push('- "I can only urge you" = Strong pressure, implied threat');
+  prompt.push('- "It\'s very frustrating" = He sees himself as the adult dealing with children');
+  prompt.push('- "Not for the first time" = Repeated failure, patience running out');
+  prompt.push('- "A toi de jouer" = Trust test, show me what you\'ve got');
+  prompt.push('- "We need to" where "we" = "you specifically"');
+  prompt.push('- Public CC to all managers = Teaching moment, everyone watching your response');
+  prompt.push('- Stacking complaints in numbered lists = Systematic failure, not a one-off');
+  prompt.push('- Short deadline after criticism = Urgency signals seriousness');
+  prompt.push('- Rhetorical questions = Not asking, punishing');
+  prompt.push('- "Project [Name]" = Formal initiative, must be tracked and reported on');
+  prompt.push('- History references ("wasn\'t the case before") = Comparing you to predecessor');
+  prompt.push('=== END PATTERNS ===');prompt.push('');
+  prompt.push('=== MY CURRENT SHIFT DATA ===');ctx.forEach(function(c){prompt.push(c)});prompt.push('=== END DATA ===');prompt.push('');
+  prompt.push('=== RESPONSE FORMAT RULES ===');
+  prompt.push('My draft response MUST follow these rules (Paul\'s preferred format):');
+  prompt.push('1. Use NUMBERED LISTS, never narrative paragraphs');
+  prompt.push('2. Include SPECIFIC NUMBERS (scores, percentages, counts)');
+  prompt.push('3. Name INDIVIDUALS, never say "the team"');
+  prompt.push('4. Use SMART actions: Who / What / When');
+  prompt.push('5. Frame through "We care" (about guests, colleagues, the pub)');
+  prompt.push('6. End with: "Any questions, please let me know."');
+  prompt.push('7. Own any failures immediately — never defend, always propose fix');
+  prompt.push('8. Keep it SHORT — Paul respects brevity');
+  prompt.push('9. If he\'s angry: acknowledge his frustration specifically, show you understand the real impact, propose numbered fix plan with dates');
+  prompt.push('=== END RULES ===');prompt.push('');
+  prompt.push('Format your answer EXACTLY as:');prompt.push('');
+  prompt.push('WHAT PAUL WANTS:');prompt.push('• [concrete action 1]');prompt.push('• [concrete action 2]');prompt.push('');
+  prompt.push('EMAIL TYPE: [Strategic/Positive | Correction/Pressure | Frustrated Adult | Vulnerable/Human]');prompt.push('');
+  prompt.push('DECODED SUBTEXT:');prompt.push('[1-2 sentences: what\'s really going on beneath the words]');prompt.push('');
+  prompt.push('PRIORITY:');prompt.push('🔴 Today: ...');prompt.push('🟡 This week: ...');prompt.push('');
+  prompt.push('DRAFT RESPONSE:');prompt.push('[the email I can copy-paste and send — following all format rules above]');
+  var promptText=prompt.join('\n');
+  document.getElementById('paulDecoded').innerHTML='<div style="font-size:12px;color:var(--text-light);margin-bottom:8px">Copy this prompt → paste into ChatGPT or Claude → paste the result in the draft box below.</div><pre style="white-space:pre-wrap;font-size:12px;line-height:1.5;margin:0">'+esc(promptText)+'</pre>';
+  document.getElementById('paulDraft').value='';
+  document.getElementById('paulDraft').placeholder='Paste the AI response here, then edit before sending...';
+  document.getElementById('paulOutput').classList.add('show');
+  cp(promptText);toast('Prompt copied — paste in ChatGPT/Claude');vib()
+}
+
+// -- C1: WEEKLY PAUL UPDATE GENERATOR --
+function generateWeeklyUpdate(){
+  save();gAll();
+  var today=new Date(S.d+'T12:00:00');
+  var dow=today.getDay();var mondayOff=dow===0?6:dow-1;
+  var monday=new Date(today.getTime()-mondayOff*864e5);
+  var sunday=new Date(monday.getTime()+6*864e5);
+  var monStr=monday.toISOString().split('T')[0];
+  var sunStr=sunday.toISOString().split('T')[0];
+  var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');
+  var weekShifts=[];
+  idx.forEach(function(key){var d=key.split('_')[0];if(d>=monStr&&d<=sunStr){try{var data=JSON.parse(localStorage.getItem(K+key)||'null');if(data)weekShifts.push({key:key,date:d,shift:key.split('_')[1],data:data})}catch(e){}}});
+  if(!weekShifts.length){document.getElementById('weeklyText').value='No shift data this week ('+monStr+' to '+sunStr+'). Add notes manually.';document.getElementById('weeklyOutput').classList.add('show');toast('No shifts found');return}
+  var totalChecks=0,doneChecks=0,total86=0,totalLoss=0,totalPreps=0,donePreps=0,eqIssues=0,eqResolved=0;
+  var all86=[],allEqActive=[];
+  weekShifts.forEach(function(ws){var d=ws.data;
+    doneChecks+=Object.keys(d.stC||{}).length;totalChecks+=ST_ITEMS.length;
+    doneChecks+=d.psC?Object.keys(d.psC).length:0;totalChecks+=PRE_SVC.length;
+    var tc=0;for(var z in CL_ZONES){if(CL_ZONES.hasOwnProperty(z))tc+=CL_ZONES[z].length}
+    doneChecks+=Object.keys(d.clC||{}).length;totalChecks+=tc;
+    if(d.e86&&d.e86.length){total86+=d.e86.length;d.e86.forEach(function(it){if(typeof it==='object'){if(it.buy)totalLoss+=it.buy;all86.push(it.n+' ('+ws.date+')')}else{all86.push(it+' ('+ws.date+')')}})}
+    (d.preps||[]).forEach(function(p){if(p.t){totalPreps++;if(p.done)donePreps++}});
+    (d.equip||[]).forEach(function(e){eqIssues++;if(e.resolved)eqResolved++;else allEqActive.push(e.name+': '+e.issue+' ('+ws.date+')')})
+  });
+  var checkPct=totalChecks>0?Math.round(doneChecks/totalChecks*100):0;
+  var prepPct=totalPreps>0?Math.round(donePreps/totalPreps*100):0;
+  var ho=S.ho||{};
+  var l=[];
+  l.push('WEEKLY KITCHEN UPDATE');l.push(BRAND.venue+' — '+BRAND.chain);
+  l.push('Week: '+monStr+' to '+sunStr);l.push('Shifts logged: '+weekShifts.length);l.push('');
+  l.push('KEY METRICS');
+  l.push('  Audit completion: '+checkPct+'% ('+doneChecks+'/'+totalChecks+' checks across '+weekShifts.length+' shifts)');
+  l.push('  Prep completion: '+prepPct+'% ('+donePreps+'/'+totalPreps+')');
+  l.push('  86\'d items: '+total86+(totalLoss>0?' (buy-price loss: '+totalLoss.toFixed(2)+'€)':''));
+  l.push('  Equipment: '+eqIssues+' issues, '+eqResolved+' resolved');l.push('');
+  if(all86.length){l.push('86\'d ITEMS THIS WEEK');all86.forEach(function(item){l.push('  • '+item)});l.push('')}
+  if(allEqActive.length){l.push('EQUIPMENT — STILL ACTIVE');allEqActive.forEach(function(item){l.push('  • '+item)});l.push('')}
+  if(ho.tasks&&ho.tasks.trim()){l.push('ONGOING ITEMS');ho.tasks.trim().split('\n').forEach(function(ln){if(ln.trim())l.push('  • '+ln.trim())});l.push('')}
+  l.push('NEXT WEEK PRIORITIES');l.push('  [Add priorities here]');l.push('');
+  l.push('Any questions, please let me know.');l.push('');
+  l.push((ho.k||'KSM'));l.push(BRAND.venue+' Kitchen');
+  document.getElementById('weeklyText').value=l.join('\n');
+  document.getElementById('weeklyOutput').classList.add('show');
+  toast('Weekly update — '+weekShifts.length+' shifts');vib()
 }
 
 // -- AUTOCOMPLETE (category ▸ item picker + search) --
@@ -2269,7 +2581,7 @@ var liveSaveTimer;document.addEventListener('input',function(e){if(e.target.clos
 
 // -- RENDER SAFETY WRAPPERS --
 function safeRender(fn,name){return function(){try{fn.apply(this,arguments)}catch(e){console.error('['+name+'] render error:',e);toast('Display glitch \u2014 try refreshing')}}}
-;['renderAll','rAlg','r86','rEq','rPreps','rFeedback','rComms','rDels','rSt','rPs','rCl','rCls','rHo','rCfg','rDlc','rAlgRef','uProg','uUrgent','uBadges','rDelegSummary','rShiftSummary','rHist','rProducts','rSuppliers','rTeam'].forEach(function(name){if(typeof window[name]==='function')window[name]=safeRender(window[name],name)});
+;['renderAll','rAlg','r86','rEq','rPreps','rFeedback','rComms','rDels','rSt','rPs','rCl','rCls','rHo','rCfg','rDlc','rAlgRef','uProg','uUrgent','uBadges','rDelegSummary','rShiftSummary','rHist','rProducts','rSuppliers','rTeam','rActionPlan'].forEach(function(name){if(typeof window[name]==='function')window[name]=safeRender(window[name],name)});
 init();
 
 // -- SWIPE TO DELETE --
