@@ -204,6 +204,24 @@ button:focus-visible,.ni:focus-visible{outline:2px solid var(--terra);outline-of
 .dlc-del:active{opacity:1}
 .dlc-add-btn{background:none;border:1.5px dashed var(--border);color:var(--sage);font-size:16px;font-weight:var(--fw-black);width:36px;height:36px;border-radius:var(--radius-xs);cursor:pointer;margin-left:var(--sp-8);display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;transition:var(--ease)}
 .dlc-add-btn:active{background:var(--sage-soft)}
+.dt-list{display:flex;flex-direction:column;gap:var(--sp-8)}
+.dt-item{display:flex;align-items:center;gap:var(--sp-12);padding:var(--sp-12);background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);min-height:52px;transition:border-color .2s}
+.dt-item.dt-red{border-color:var(--red);background:var(--red-soft)}
+.dt-item.dt-amber{border-color:var(--amber);background:var(--amber-soft)}
+.dt-item.dt-yellow{border-color:#EAB308;background:#FEF9C3}
+.dt-item.dt-green{border-color:var(--green-dk);background:var(--green-soft)}
+.dt-ico{font-size:20px;flex-shrink:0}
+.dt-body{flex:1;min-width:0}
+.dt-name{font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--text)}
+.dt-meta{font-size:11px;color:var(--text-muted);margin-top:2px}
+.dt-countdown{font-size:var(--fs-sm);font-weight:var(--fw-black);white-space:nowrap;padding:var(--sp-4) var(--sp-8);border-radius:var(--radius-xs)}
+.dt-red .dt-countdown{color:var(--red)}
+.dt-amber .dt-countdown{color:#D97706}
+.dt-yellow .dt-countdown{color:#A16207}
+.dt-green .dt-countdown{color:var(--green-dk)}
+.dt-del{background:none;border:none;color:var(--red);font-size:var(--fs-lg);cursor:pointer;padding:var(--sp-8);opacity:0.4;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.dt-del:active{opacity:1}
+.dt-empty{text-align:center;padding:var(--sp-16);color:var(--text-muted);font-size:var(--fs-sm);font-style:italic}
 .algref-cat{margin-bottom:var(--sp-16)}.algref-cat:last-child{margin-bottom:0}
 .algref-cat-h{display:flex;align-items:center;gap:var(--sp-8);margin-bottom:var(--sp-8);cursor:pointer}
 .algref-cat-ico{font-size:20px;width:44px;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;background:var(--amber-soft);color:var(--amber);font-weight:var(--fw-bold);flex-shrink:0}
@@ -752,6 +770,11 @@ button:focus-visible,.ni:focus-visible{outline:2px solid var(--terra);outline-of
   .dlc-edit:focus{border-color:var(--sage)}
   .dlc-del{color:var(--red)}
   .dlc-add-btn{border-color:#4A4840;color:var(--sage)}
+  .dt-item{background:#242320;border-color:#3A3830}
+  .dt-item.dt-red{background:#3A2820;border-color:var(--red)}
+  .dt-item.dt-amber{background:#3A3420;border-color:var(--amber)}
+  .dt-item.dt-yellow{background:#3A3420;border-color:#EAB308}
+  .dt-item.dt-green{background:#1F2E25;border-color:var(--green-dk)}
   .algref-item{background:#242320;border-color:#3A3830}
   .algref-cat-cnt{background:#1E1D1A}
   .algref-search{background:#242320;color:#E8E4DC;border-color:#3A3830}
@@ -886,6 +909,11 @@ html[data-theme="dark"] .dlc-edit{background:#242320;color:#E8E4DC;border-color:
 html[data-theme="dark"] .dlc-edit:focus{border-color:var(--sage)}
 html[data-theme="dark"] .dlc-del{color:var(--red)}
 html[data-theme="dark"] .dlc-add-btn{border-color:#4A4840;color:var(--sage)}
+html[data-theme="dark"] .dt-item{background:#242320;border-color:#3A3830}
+html[data-theme="dark"] .dt-item.dt-red{background:#3A2820;border-color:var(--red)}
+html[data-theme="dark"] .dt-item.dt-amber{background:#3A3420;border-color:var(--amber)}
+html[data-theme="dark"] .dt-item.dt-yellow{background:#3A3420;border-color:#EAB308}
+html[data-theme="dark"] .dt-item.dt-green{background:#1F2E25;border-color:var(--green-dk)}
 html[data-theme="dark"] .algref-item{background:#242320;border-color:#3A3830}
 html[data-theme="dark"] .algref-cat-cnt{background:#1E1D1A}
 html[data-theme="dark"] .algref-search{background:#242320;color:#E8E4DC;border-color:#3A3830}
@@ -939,6 +967,111 @@ html[data-theme="dark"] .sof-close-btn{background:#3A2820;border-color:var(--ter
 .del-card.del-checked{opacity:0.7}
 .del-card.del-checked input{text-decoration:line-through}
 
+/* B1 — Silliker Self-Audit */
+.sa-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);z-index:200;display:none;flex-direction:column;overflow:hidden}
+.sa-overlay.show{display:flex}
+.sa-hdr{background:var(--black);color:#fff;padding:14px var(--pad);display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;padding-top:max(14px,env(safe-area-inset-top))}
+.sa-hdr-title{flex:1;font-size:var(--fs-lg);font-weight:var(--fw-black)}
+.sa-hdr-score{font-size:var(--fs-xl);font-weight:var(--fw-black);color:var(--sage)}
+.sa-hdr-max{font-size:var(--fs-sm);color:rgba(255,255,255,0.5);margin-left:2px}
+.sa-close{width:40px;height:40px;border:none;background:rgba(255,255,255,0.1);border-radius:50%;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sa-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:var(--sp-16) var(--pad) 120px}
+.sa-sec{margin-bottom:var(--sp-16)}
+.sa-sec-h{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-12) var(--sp-16);background:var(--sage-soft);border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;min-height:48px}
+.sa-sec-title{font-weight:var(--fw-bold);font-size:var(--fs-base);color:var(--sage-dark)}
+.sa-sec-score{font-weight:var(--fw-black);font-size:var(--fs-base);color:var(--sage)}
+.sa-sec-items{background:var(--card);border-radius:0 0 var(--radius-sm) var(--radius-sm);box-shadow:var(--shadow-sm)}
+.sa-item{display:flex;align-items:center;gap:var(--sp-8);padding:var(--sp-12) var(--sp-16);border-bottom:1px solid var(--cream-dark);min-height:52px}
+.sa-item:last-child{border-bottom:none}
+.sa-item-text{flex:1;font-size:var(--fs-sm);line-height:var(--lh-base);color:var(--text)}
+.sa-item-pts{font-size:var(--fs-xs);font-weight:var(--fw-bold);color:var(--text-muted);white-space:nowrap;min-width:32px;text-align:right}
+.sa-btn-row{display:flex;gap:4px;flex-shrink:0}
+.sa-btn{width:36px;height:36px;border-radius:50%;border:2px solid var(--cream-dark);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--ease)}
+.sa-btn.sa-pass{border-color:var(--sage);background:var(--sage);color:#fff}
+.sa-btn.sa-fail{border-color:var(--red);background:var(--red);color:#fff}
+.sa-btn.sa-na{border-color:var(--text-muted);background:var(--text-muted);color:#fff;font-size:11px;font-weight:700}
+.sa-comment{width:100%;margin-top:6px;padding:6px 10px;border:1px solid var(--cream-dark);border-radius:var(--radius-xs);font-size:var(--fs-xs);font-family:inherit;resize:none;background:var(--card);color:var(--text);display:none}
+.sa-comment.show{display:block}
+.sa-footer{position:fixed;bottom:0;left:0;right:0;padding:var(--sp-16) var(--pad);padding-bottom:max(var(--sp-16),env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--cream-dark);z-index:10;display:flex;gap:var(--sp-8)}
+.sa-footer-btn{flex:1;padding:14px;border:none;border-radius:var(--radius-sm);font-size:var(--fs-base);font-weight:var(--fw-bold);cursor:pointer;min-height:52px}
+.sa-finish{background:var(--sage);color:#fff}
+.sa-cancel{background:var(--cream-dark);color:var(--text)}
+.sa-grade{display:inline-block;padding:2px 10px;border-radius:var(--radius-xs);font-weight:var(--fw-black);font-size:var(--fs-sm)}
+.sa-grade-a{background:var(--sage-soft);color:var(--sage)}
+.sa-grade-b{background:var(--amber-soft);color:var(--amber)}
+.sa-grade-c{background:var(--red-soft);color:var(--red)}
+.sa-result{padding:var(--sp-24) var(--pad);text-align:center}
+.sa-result-score{font-size:48px;font-weight:var(--fw-black);color:var(--sage)}
+.sa-result-label{font-size:var(--fs-sm);color:var(--text-muted);margin-top:4px}
+.sa-result-pct{font-size:var(--fs-xl);font-weight:var(--fw-bold);margin-top:8px}
+.sa-fail-list{text-align:left;margin-top:var(--sp-16)}
+.sa-fail-item{display:flex;align-items:center;gap:var(--sp-8);padding:8px 0;font-size:var(--fs-sm);color:var(--red);border-bottom:1px solid var(--cream-dark)}
+html[data-theme="dark"] .sa-overlay{background:#1A1918}
+html[data-theme="dark"] .sa-sec-h{background:#1F2E25}
+html[data-theme="dark"] .sa-sec-items{background:#242320}
+html[data-theme="dark"] .sa-item{border-color:#3A3830}
+html[data-theme="dark"] .sa-btn{border-color:#3A3830;background:#242320}
+html[data-theme="dark"] .sa-comment{border-color:#3A3830;background:#2E2D28;color:#E8E4DC}
+html[data-theme="dark"] .sa-footer{background:#242320;border-color:#3A3830}
+html[data-theme="dark"] .sa-cancel{background:#353430;color:#E8E4DC}
+@media(prefers-color-scheme:dark){
+  .sa-overlay{background:#1A1918}
+  .sa-sec-h{background:#1F2E25}
+  .sa-sec-items{background:#242320}
+  .sa-item{border-color:#3A3830}
+  .sa-btn{border-color:#3A3830;background:#242320}
+  .sa-comment{border-color:#3A3830;background:#2E2D28;color:#E8E4DC}
+  .sa-footer{background:#242320;border-color:#3A3830}
+  .sa-cancel{background:#353430;color:#E8E4DC}
+}
+html[data-theme="service"] .sa-overlay{background:#1A1918}
+html[data-theme="service"] .sa-sec-h{background:#1F2E25}
+html[data-theme="service"] .sa-sec-items{background:#242320}
+html[data-theme="service"] .sa-item{border-color:#3A3830;min-height:56px}
+html[data-theme="service"] .sa-item-text{font-size:16px}
+html[data-theme="service"] .sa-btn{width:44px;height:44px;border-color:#3A3830;background:#242320}
+html[data-theme="service"] .sa-comment{border-color:#3A3830;background:#2E2D28;color:#E8E4DC}
+html[data-theme="service"] .sa-footer{background:#242320;border-color:#3A3830}
+html[data-theme="service"] .sa-footer-btn{min-height:56px;font-size:16px}
+html[data-theme="service"] .sa-cancel{background:#353430;color:#E8E4DC}
+
+/* F1 — FT Library */
+.ft-card{background:var(--card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);margin-bottom:8px;overflow:hidden}
+.ft-card-h{display:flex;align-items:center;gap:var(--sp-12);padding:var(--sp-12) var(--sp-16);cursor:pointer;min-height:52px}
+.ft-card-h:active{background:var(--cream-dark)}
+.ft-station{font-size:10px;font-weight:var(--fw-black);padding:2px 8px;border-radius:var(--radius-xs);white-space:nowrap;flex-shrink:0}
+.ft-station-grill{background:var(--red-soft);color:var(--red)}
+.ft-station-fryer{background:var(--amber-soft);color:var(--amber)}
+.ft-station-salad{background:var(--sage-soft);color:var(--sage)}
+.ft-station-pass{background:var(--blue-soft);color:var(--blue)}
+.ft-station-dessert{background:var(--rose-soft);color:var(--rose)}
+.ft-name{flex:1;font-size:var(--fs-sm);font-weight:var(--fw-semi);color:var(--text)}
+.ft-chv{font-size:12px;color:var(--text-muted);transition:transform var(--duration-fast)}
+.ft-body{display:none;padding:0 var(--sp-16) var(--sp-16);font-size:var(--fs-xs);line-height:1.6;color:var(--text-light)}
+.ft-body.show{display:block}
+.ft-body dt{font-weight:var(--fw-bold);color:var(--text);margin-top:8px}
+.ft-body dd{margin-left:0;margin-bottom:4px}
+.ft-sub{background:var(--cream);padding:8px 12px;border-radius:var(--radius-xs);margin-top:6px;font-size:var(--fs-xs)}
+.ft-sub-title{font-weight:var(--fw-bold);color:var(--sage-dark)}
+.ft-search{width:100%;padding:10px 14px;border:1px solid var(--cream-dark);border-radius:var(--radius-sm);font-size:var(--fs-sm);font-family:inherit;background:var(--card);color:var(--text);margin-bottom:12px}
+html[data-theme="dark"] .ft-card{background:#242320}
+html[data-theme="dark"] .ft-card-h:active{background:#353430}
+html[data-theme="dark"] .ft-body{color:#9C9890}
+html[data-theme="dark"] .ft-sub{background:#2E2D28}
+html[data-theme="dark"] .ft-search{background:#2E2D28;border-color:#3A3830;color:#E8E4DC}
+@media(prefers-color-scheme:dark){
+  .ft-card{background:#242320}
+  .ft-card-h:active{background:#353430}
+  .ft-body{color:#9C9890}
+  .ft-sub{background:#2E2D28}
+  .ft-search{background:#2E2D28;border-color:#3A3830;color:#E8E4DC}
+}
+html[data-theme="service"] .ft-card{background:#242320}
+html[data-theme="service"] .ft-card-h{min-height:56px}
+html[data-theme="service"] .ft-name{font-size:16px}
+html[data-theme="service"] .ft-body{font-size:14px}
+html[data-theme="service"] .ft-search{min-height:56px;font-size:16px;background:#2E2D28;border-color:#3A3830;color:#E8E4DC}
+
 /* A5 — Cleared state */
 .uz-clear{display:none;width:100%;padding:16px 20px;background:var(--sage-soft);border-radius:var(--radius-md,12px);text-align:center;font-size:var(--fs-base,15px);font-weight:600;color:var(--sage);letter-spacing:0.3px}
 html[data-theme="dark"] .uz-clear{background:var(--black-soft);color:var(--sage)}
@@ -955,6 +1088,114 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
 .comms-copy-row{display:flex;gap:8px;margin-top:8px}
 .comms-paste-btn{width:100%;padding:12px 20px;border:2px dashed var(--amber-soft);border-radius:var(--radius-md,12px);font-size:var(--fs-sm,13px);font-weight:600;cursor:pointer;background:var(--amber-soft);color:var(--amber);min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px}
 .comms-section-label{font-weight:700;font-size:var(--fs-sm,13px);color:var(--sage);margin-bottom:8px;letter-spacing:0.5px;text-transform:uppercase}
+
+/* B2 — Global Search (Cmd+K) */
+.gs-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);z-index:250;display:flex;align-items:flex-start;justify-content:center;padding-top:60px;opacity:0;transition:opacity var(--duration-fast);pointer-events:none}
+.gs-overlay.show{opacity:1;pointer-events:auto}
+.gs-sheet{width:100%;max-width:480px;max-height:75vh;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;transform:translateY(-12px) scale(0.97);transition:transform var(--duration-base) var(--ease-out);overflow:hidden}
+.gs-overlay.show .gs-sheet{transform:translateY(0) scale(1)}
+.gs-input-wrap{display:flex;align-items:center;gap:var(--sp-8);padding:var(--sp-16) var(--sp-16);border-bottom:1px solid var(--cream-dark)}
+.gs-input-wrap .gs-ico{font-size:20px;color:var(--text-muted);flex-shrink:0}
+.gs-input{flex:1;border:none;background:transparent;font-size:var(--fs-lg);font-family:inherit;color:var(--text);outline:none;font-weight:var(--fw-semi)}
+.gs-input::placeholder{color:var(--text-muted);font-weight:var(--fw-normal)}
+.gs-kbd{font-size:var(--fs-xs);color:var(--text-muted);background:var(--cream-dark);padding:2px 8px;border-radius:6px;font-weight:var(--fw-bold);white-space:nowrap;flex-shrink:0}
+.gs-close{width:32px;height:32px;border-radius:50%;background:var(--cream-dark);border:none;font-size:var(--fs-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);flex-shrink:0}
+.gs-results{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;max-height:60vh;padding:var(--sp-8) 0}
+.gs-group-label{font-size:10px;font-weight:var(--fw-black);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;padding:var(--sp-8) var(--sp-16) var(--sp-4)}
+.gs-item{display:flex;align-items:center;gap:var(--sp-12);padding:var(--sp-12) var(--sp-16);cursor:pointer;transition:background var(--duration-fast);min-height:48px}
+.gs-item:active{background:var(--cream-dark)}
+.gs-item-ico{font-size:18px;flex-shrink:0;width:28px;text-align:center}
+.gs-item-body{flex:1;min-width:0}
+.gs-item-title{font-size:var(--fs-sm);font-weight:var(--fw-semi);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-item-sub{font-size:var(--fs-xs);color:var(--text-light);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-item-tag{font-size:10px;font-weight:var(--fw-bold);padding:2px 8px;border-radius:var(--radius-xs);white-space:nowrap;flex-shrink:0}
+.gs-tag-dlc{background:var(--green-soft);color:var(--sage)}
+.gs-tag-alg{background:var(--red-soft);color:var(--red)}
+.gs-tag-sop{background:var(--blue-soft);color:var(--blue)}
+.gs-tag-product{background:var(--amber-soft);color:var(--amber)}
+.gs-tag-supplier{background:var(--sage-soft);color:var(--sage)}
+.gs-tag-menu{background:var(--terra-soft);color:var(--terra)}
+.gs-tag-prep{background:var(--amber-soft);color:var(--amber)}
+.gs-tag-shift{background:var(--red-soft);color:var(--red)}
+.gs-empty{text-align:center;padding:var(--sp-32) var(--sp-16);color:var(--text-muted);font-size:var(--fs-sm)}
+.gs-hint{text-align:center;padding:var(--sp-24) var(--sp-16);color:var(--text-muted);font-size:var(--fs-xs);line-height:1.6}
+.hdr-search-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--ease)}
+.hdr-search-btn:active{background:rgba(255,255,255,0.2);color:#fff}
+html[data-theme="dark"] .gs-sheet{background:#242320}
+html[data-theme="dark"] .gs-input-wrap{border-color:#3A3830}
+html[data-theme="dark"] .gs-input{color:#E8E4DC}
+html[data-theme="dark"] .gs-item:active{background:#353430}
+html[data-theme="dark"] .gs-close{background:#353430;color:#E8E4DC}
+html[data-theme="dark"] .gs-kbd{background:#353430}
+@media(prefers-color-scheme:dark){
+  .gs-sheet{background:#242320}
+  .gs-input-wrap{border-color:#3A3830}
+  .gs-input{color:#E8E4DC}
+  .gs-item:active{background:#353430}
+  .gs-close{background:#353430;color:#E8E4DC}
+  .gs-kbd{background:#353430}
+}
+/* SERVICE MODE — dark base + large text + fat tap targets */
+html[data-theme="service"]{--cream:#1A1918;--cream-dark:#242320;--border:transparent;--text:#E8E4DC;--text-light:#9C9890;--text-muted:#5C5850;--card:#242320;--shadow:0 2px 12px rgba(0,0,0,0.3);--shadow-sm:0 1px 4px rgba(0,0,0,0.2);--shadow-lg:0 8px 30px rgba(0,0,0,0.4);color-scheme:dark;--yellow:#D4836D;--yellow-soft:#3A2820;--yellow-dark:#B5654D;--purple:#5B8A72;--purple-soft:#1F2E25;--purple-dark:#3D6B52;--bg:#1A1918;--fs-xs:14px;--fs-sm:16px;--fs-base:18px;--fs-lg:22px;--fs-xl:28px;--fs-xxl:36px;--radius-sm:14px;--radius:18px;--radius-lg:22px;--sp-4:6px;--sp-8:10px;--sp-12:14px;--sp-16:18px;--sp-24:24px}
+html[data-theme="service"] .cd,html[data-theme="service"] .mo-s,html[data-theme="service"] .bs-content,html[data-theme="service"] .cd-body{background:#242320}
+html[data-theme="service"] .bnav{background:rgba(36,35,32,0.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+html[data-theme="service"] .bnav .nb{min-height:56px;font-size:13px;padding:8px 4px}
+html[data-theme="service"] .bsheet{background:rgba(0,0,0,0.6)}
+html[data-theme="service"] .fi,html[data-theme="service"] .ac-in,html[data-theme="service"] .search-in{background:#2E2D28;color:#E8E4DC;border-color:#3A3830;min-height:56px;font-size:18px}
+html[data-theme="service"] .fi:focus,html[data-theme="service"] .ac-in:focus{background:#353430;border-color:var(--sage)}
+html[data-theme="service"] .mo-c,html[data-theme="service"] .bs-cancel{background:#353430;color:#E8E4DC}
+html[data-theme="service"] button,html[data-theme="service"] .abtn,html[data-theme="service"] .xbtn{min-height:56px;font-size:16px}
+html[data-theme="service"] .chip{min-height:56px;font-size:16px;padding:10px 16px}
+html[data-theme="service"] .cd-h{min-height:64px;padding:14px 18px}
+html[data-theme="service"] .cd-t{color:#E8E4DC;font-size:18px}
+html[data-theme="service"] .cd-st{font-size:14px}
+html[data-theme="service"] .cd-ico{width:48px;height:48px;font-size:22px;background:#2E2D28}
+html[data-theme="service"] .uz{background:#242320;border-color:#4A4840}
+html[data-theme="service"] .uz-cell{border-color:#3A3830;min-height:56px;padding:10px}
+html[data-theme="service"] .uz-num{font-size:24px}
+html[data-theme="service"] .uz-lbl{font-size:13px}
+html[data-theme="service"] .uz-next{border-color:#3A3830}
+html[data-theme="service"] .hol,html[data-theme="service"] .cfg-label{color:#E8E4DC}
+html[data-theme="service"] .dbtn{color:var(--red);opacity:0.7}
+html[data-theme="service"] .comm-card{background:#2E2D28}
+html[data-theme="service"] .comm-text{color:#E8E4DC}
+html[data-theme="service"] .prep-card{background:#2E2D28;border-color:#3A3830;min-height:56px}
+html[data-theme="service"] .prep-card.done{background:#1F2E25;border-color:var(--sage-dark)}
+html[data-theme="service"] .prep-name{color:#E8E4DC;font-size:18px}
+html[data-theme="service"] .prep-card.done .prep-name{color:#9C9890}
+html[data-theme="service"] .ci{background:#2E2D28;border-color:#3A3830;min-height:56px}
+html[data-theme="service"] .ci.done{background:#1F2E25}
+html[data-theme="service"] .cl{font-size:16px}
+html[data-theme="service"] .cb{border-color:#4A4840;width:28px;height:28px}
+html[data-theme="service"] .ac-btn{min-width:56px;min-height:56px;font-size:22px}
+html[data-theme="service"] .dlc-row{background:#242320;border-color:#3A3830;min-height:56px}
+html[data-theme="service"] .dlc-name{font-size:16px}
+html[data-theme="service"] .dlc-edit{min-height:44px;font-size:16px}
+html[data-theme="service"] .dt-item{background:#242320;border-color:#3A3830;min-height:56px}
+html[data-theme="service"] .dt-item.dt-red{background:#3A2820;border-color:var(--red)}
+html[data-theme="service"] .dt-item.dt-amber{background:#3A3420;border-color:var(--amber)}
+html[data-theme="service"] .dt-item.dt-yellow{background:#3A3420;border-color:#EAB308}
+html[data-theme="service"] .dt-item.dt-green{background:#1F2E25;border-color:var(--green-dk)}
+html[data-theme="service"] .dt-name{font-size:18px}
+html[data-theme="service"] .dt-countdown{font-size:18px}
+html[data-theme="service"] textarea.fi{background:#242320;color:#E8E4DC;-webkit-text-fill-color:#E8E4DC;border-color:#3A3830;font-size:18px}
+html[data-theme="service"] .alg-chip-crit{min-height:56px;font-size:16px;background:#3A2820;color:var(--red);border-color:#5A3830}
+html[data-theme="service"] .alg-chip-warn{min-height:56px;font-size:16px;background:#3A3420;color:var(--amber);border-color:#5A4830}
+html[data-theme="service"] .alg-chip-ok{min-height:56px;font-size:16px;background:#1F2E25;color:var(--sage);border-color:#2F4A35}
+html[data-theme="service"] select{min-height:56px;font-size:16px}
+html[data-theme="service"] .reason-btn,html[data-theme="service"] .urg-btn,html[data-theme="service"] .tpl-btn{min-height:56px;font-size:16px;background:#242320;border-color:#3A3830;color:#E8E4DC}
+html[data-theme="service"] .gs-sheet{background:#242320}
+html[data-theme="service"] .gs-input{color:#E8E4DC;font-size:20px;min-height:56px}
+html[data-theme="service"] .gs-item{min-height:56px;font-size:16px}
+html[data-theme="service"] .gs-close{background:#353430;color:#E8E4DC}
+html[data-theme="service"] .ki-sheet{background:#242320}
+html[data-theme="service"] .ki-search{background:#2E2D28;color:#E8E4DC;border-color:#3A3830;font-size:18px;min-height:56px}
+html[data-theme="service"] .eq-item,.service .fb-card{min-height:56px}
+html[data-theme="service"] .hdr{padding:14px 18px}
+html[data-theme="service"] .hdr h1{font-size:22px}
+html[data-theme="service"] .uz-clear{background:var(--black-soft);color:var(--sage)}
+html[data-theme="service"] .empty-msg{color:#9C9890}
+html[data-theme="service"] .chipx{background:rgba(255,255,255,0.06)}
 </style>
 </head>
 <body>
@@ -963,6 +1204,7 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
   <div class="hdr-top">
     <div><h1><span class="frog-dot">&#9679;</span> ALEX APP</h1><div class="sub">Hop House — Frog Pubs</div></div>
     <div style="display:flex;gap:6px;align-items:center">
+      <button class="hdr-search-btn" onclick="openGlobalSearch()" title="Search (Cmd+K)">&#128269;</button>
       <button class="copy-yest" onclick="toggleQuiet()" id="quietBtn" title="Animations: full" style="font-size:11px;padding:6px 10px;min-width:auto">Full</button>
       <button class="copy-yest" onclick="copyYesterday()">Copy yesterday</button>
     </div>
@@ -999,6 +1241,7 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
       <div class="uz-cell" onclick="scrollToCard('c-alg')"><div class="uz-num prio-grey" id="uzAlg">0</div><div class="uz-lbl">Allergens</div></div>
       <div class="uz-cell" onclick="scrollToCard('c-86')"><div class="uz-num prio-grey" id="uz86">0</div><div class="uz-lbl">86'd</div></div>
       <div class="uz-cell" onclick="scrollToCard('c-eq')"><div class="uz-num prio-grey" id="uzEq">0</div><div class="uz-lbl">Equipment</div></div>
+      <div class="uz-cell" onclick="scrollToCard('c-dtk')"><div class="uz-num prio-grey" id="uzDlc">0</div><div class="uz-lbl">DLC</div></div>
       <div class="uz-clear" id="uzClear">All clear. Service is steady.</div>
     </div>
     <div class="uz-next" id="uzNext"></div>
@@ -1012,6 +1255,9 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
 
   <div class="cd" id="c-eq"><div class="cd-h" onclick="tog('c-eq')"><div class="cd-hl"><div class="cd-ico ico-eq">&#128295;</div><div><div class="cd-t">Equipment Issues</div><div class="cd-st" id="eqN">All smooth</div></div></div><span class="cd-badge" id="eqB" style="display:none;background:var(--amber-soft);color:var(--amber)">0</span><span class="cd-chv">&#9660;</span></div>
     <div class="cd-body"><div id="eqList"></div><button class="abtn" onclick="showEqSheet()" style="border-color:var(--amber);color:var(--amber)">&#128295; Report Issue</button></div></div>
+
+  <div class="cd" id="c-dtk"><div class="cd-h" onclick="tog('c-dtk')"><div class="cd-hl"><div class="cd-ico" style="font-size:16px">&#x23F0;</div><div><div class="cd-t">DLC Tracker</div><div class="cd-st" id="dtkN">No items tracked</div></div></div><span class="cd-badge" id="dtkB" style="display:none;background:var(--red-soft);color:var(--red)">0</span><span class="cd-chv">&#9660;</span></div>
+    <div class="cd-body"><div class="dt-list" id="dtkList"></div><button class="abtn" onclick="showDtkSheet()" style="border-color:var(--sage);color:var(--sage)">&#x23F0; Track DLC Item</button></div></div>
 
   <!-- A3 — Action Plan -->
   <div class="cd" id="c-actionplan"><div class="cd-h" onclick="tog('c-actionplan')"><div class="cd-hl"><div class="cd-ico" style="background:var(--amber-soft);color:var(--amber)">&#9889;</div><div><div class="cd-t">Action Plan</div><div class="cd-st" id="apN">No actions yet</div></div></div><span class="cd-badge" id="apB" style="display:none;background:var(--amber-soft);color:var(--amber)">0</span><span class="cd-chv">&#9660;</span></div>
@@ -1049,6 +1295,13 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
     <div class="cd-body" id="clL"></div></div>
   <div class="cd cls-card" id="c-closing"><div class="cd-h" onclick="tog('c-closing')"><div class="cd-hl"><div class="cd-ico" style="background:var(--coral-soft);color:var(--coral)">&#x1F512;</div><div><div class="cd-t">Closing Checklist</div><div class="cd-st" id="clsSub">PM only</div></div></div><span class="cd-badge" id="clsB" style="background:var(--coral-soft);color:var(--coral)">Ready</span><span class="cd-chv">&#9660;</span></div>
     <div class="cd-body" id="clsL"></div></div>
+
+  <!-- B1 — Silliker Audit trigger -->
+  <div class="cd" id="c-audit"><div class="cd-h" onclick="tog('c-audit')"><div class="cd-hl"><div class="cd-ico" style="background:var(--blue-soft);color:var(--blue)">&#x1F50D;</div><div><div class="cd-t">Silliker Self-Audit</div><div class="cd-st" id="auditN">50-point hygiene check</div></div></div><span class="cd-badge" id="auditB" style="display:none;background:var(--blue-soft);color:var(--blue)">0</span><span class="cd-chv">&#9660;</span></div>
+    <div class="cd-body">
+      <button class="comms-gen-btn comms-gen-btn-primary" onclick="saOpen()" style="background:var(--blue);margin-bottom:12px">&#x1F50D; Start New Audit</button>
+      <div id="auditHistory"></div>
+    </div></div>
 </div>
 
 <!-- 3. HANDOVER (Notes tab) -->
@@ -1186,6 +1439,10 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
   <div class="cd" id="c-algref"><div class="cd-h" onclick="tog('c-algref')"><div class="cd-hl"><div class="cd-ico">&#x1F9B7;</div><div><div class="cd-t">Allergen Guide</div><div class="cd-st">Allergen matrix</div></div></div><span class="cd-chv">&#9660;</span></div>
     <div class="cd-body"><div id="algRefList"></div></div></div>
 
+  <!-- F1 — FT Library -->
+  <div class="cd" id="c-ft"><div class="cd-h" onclick="tog('c-ft')"><div class="cd-hl"><div class="cd-ico" style="background:var(--terra-soft);color:var(--terra)">&#x1F372;</div><div><div class="cd-t">Fiches Techniques</div><div class="cd-st" id="ftN">15 FTs + 18 sub-recipes</div></div></div><span class="cd-chv">&#9660;</span></div>
+    <div class="cd-body"><input class="ft-search" id="ftSearch" placeholder="Search FTs..." oninput="rFT()"><div id="ftList"></div></div></div>
+
   <div class="cd" id="c-settings"><div class="cd-h" onclick="tog('c-settings')"><div class="cd-hl"><div class="cd-ico">&#9881;</div><div><div class="cd-t">Settings &amp; Data</div></div></div><span class="cd-chv">&#9660;</span></div>
     <div class="cd-body">
       <div class="cfg-label">&#127769; Theme</div>
@@ -1193,6 +1450,7 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
         <button class="theme-btn" data-theme="light" onclick="setTheme('light')">Light</button>
         <button class="theme-btn" data-theme="auto" onclick="setTheme('auto')">Auto</button>
         <button class="theme-btn act" data-theme="dark" onclick="setTheme('dark')">Dark</button>
+        <button class="theme-btn" data-theme="service" onclick="setTheme('service')">&#x1F525; Service</button>
       </div>
       <div class="cfg-label" style="margin-top:16px">&#9881; General</div>
       <div style="display:flex;gap:10px;margin-bottom:14px"><input class="fi" id="sKSM" placeholder="Default KSM" onchange="sSet('ksm',this.value)"><input class="fi" id="sPub" placeholder="Pub name" onchange="sSet('pub',this.value)"></div>
@@ -1200,6 +1458,35 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
       <label class="xbtn xb-purple" style="cursor:pointer">Import backup <input type="file" accept=".json" style="display:none" onchange="importJSON(this)"></label>
       <button class="xbtn xb-danger" onclick="showModal()">Clear this shift</button>
     </div></div>
+</div>
+
+<!-- B1 — SILLIKER SELF-AUDIT -->
+<div class="sa-overlay" id="saOverlay">
+  <div class="sa-hdr">
+    <button class="sa-close" onclick="saClose()">&#10005;</button>
+    <div class="sa-hdr-title">Silliker Audit</div>
+    <div><span class="sa-hdr-score" id="saScore">0</span><span class="sa-hdr-max">/50</span></div>
+  </div>
+  <div class="sa-body" id="saBody"></div>
+  <div class="sa-footer">
+    <button class="sa-footer-btn sa-cancel" onclick="saClose()">Cancel</button>
+    <button class="sa-footer-btn sa-finish" onclick="saFinish()">Finish Audit</button>
+  </div>
+</div>
+
+<!-- B2 — GLOBAL SEARCH (Cmd+K) -->
+<div class="gs-overlay" id="gsOverlay" onclick="if(event.target===this)closeGlobalSearch()">
+  <div class="gs-sheet">
+    <div class="gs-input-wrap">
+      <span class="gs-ico">&#128269;</span>
+      <input class="gs-input" id="gsInput" placeholder="Search anything..." oninput="gsSearch()" autocomplete="off">
+      <span class="gs-kbd">Cmd+K</span>
+      <button class="gs-close" onclick="closeGlobalSearch()">&#10005;</button>
+    </div>
+    <div class="gs-results" id="gsResults">
+      <div class="gs-hint">Search DLC, allergens, SOPs, products, suppliers, menu, preps, shift data...</div>
+    </div>
+  </div>
 </div>
 
 <!-- KNOWLEDGE INDEX -->
@@ -1273,7 +1560,9 @@ html[data-theme="dark"] .comms-output textarea{border-color:var(--black-soft);ba
 <datalist id="dlEquip"><option value="Fryer 1"><option value="Fryer 2"><option value="Grill"><option value="Oven"><option value="Salamander"><option value="Microwave"><option value="Bain-marie"><option value="Walk-in fridge"><option value="Walk-in freezer"><option value="Base fridge 1"><option value="Base fridge 2"><option value="Dishwasher"><option value="Ice machine"><option value="Blender"><option value="Robot coupe"><option value="Thermometer"><option value="Extraction hood"><option value="Hand wash station"><option value="Hot water"><option value="Gas line"><option value="Plonge sink"></datalist>
 <script>
 // -- SERVICE WORKER REGISTRATION --
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').then(function(reg){
+  reg.addEventListener('updatefound',function(){var nw=reg.installing;if(nw){nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller){toast('New version ready — reload to update');}})}})
+}).catch(function(){})}
 
 const K='km3_';
 
@@ -1322,7 +1611,7 @@ function seedDefaults(){
   saveCfg()
 }
 function saveCfg(){localStorage.setItem(CFG_KEY,JSON.stringify(CFG));renderDL();rCfg()}
-function applyTheme(){var h=document.documentElement;h.removeAttribute('data-theme');if(CFG.theme==='dark')h.setAttribute('data-theme','dark');else if(CFG.theme==='light')h.setAttribute('data-theme','light');uThemeUI()}
+function applyTheme(){var h=document.documentElement;h.removeAttribute('data-theme');if(CFG.theme==='dark')h.setAttribute('data-theme','dark');else if(CFG.theme==='light')h.setAttribute('data-theme','light');else if(CFG.theme==='service')h.setAttribute('data-theme','service');uThemeUI()}
 function setTheme(t){CFG.theme=t;applyTheme();saveCfg();toast('Theme: '+t)}
 function uThemeUI(){var btns=document.querySelectorAll('.theme-btn');btns.forEach(function(b){b.classList.toggle('act',b.dataset.theme===CFG.theme)})}
 function renderDL(){
@@ -1346,7 +1635,7 @@ const MENU={
 };
 
 // -- PREP TEMPLATES (editable in Settings) --
-const PREP_TEMPLATES={'Sauces':['Aioli','BBQ Sauce','FrogBurger Sauce','Mayonnaise','Cesar sauce','Pesto Mayo','Sesame Mayo','Sriracha mayo','Lime mayo','Tartar sauce','Coconut raita','Vegan Sauce','Peanut butter sauce','Wings sauce','Ribs Glaze','White chocolate sauce','Salsa sauce','Cheese Sauce','Onion Jam','Ketchup refill'],'Meats':['Chicken Burger portions','Chicken Tenders','Chicken for Loaded Fries','Chicken Quesadillas','Chicken tikka','Poached chicken','Pulled Pork balls','Bacon','Fish + Batter','Steaks ready','Salmon portions','Ribs prep'],'Veggies & Salads':['Iceberg - sliced','Romaine - washed','Roquette - washed','Coleslaw - dressed','Coleslaw - no sauce','Pickled red onions','Red onion chopped','Red pepper slices','Chou rouge mariné','Chickpea salad','Potato salad','Cherry tomatoes cut','Cucumber diced','Cucumber kimchi','Coriander chopped','Spring onions chopped','Guacamole','Salsa maison','Pomegranate seeds'],'Desserts':['NY Cheesecake portions','Chocolate Mousse','Caramel Apple pie','Oreo stack','Waffles','Coulis framboise','Raspberries','M&Ms crushed','Oreo crushed'],'Snacks':['Nachos','Wings + batter','Mozza Sticks','Sweetcorn balls mix','Panko mushrooms','Panko Egg','Crispy chickpeas','Crispy noodles','Poppadoms','Quesadillas','Parmesan copeaux','Croutons','Smoked paprika flour','Fish batter','Fries blanched'],'Defrosting':['Guacamole (fridge)','Tortillas (fridge)','Pulled Pork (fridge)','Ribs (fridge)','Salmon (fridge)','Buns (fridge)','Hot dog breads (fridge)','NY Club Bread (fridge)','Chapatis (fridge)','Nachos (fridge)','Avocado slices (fridge)','Chicken pre-cooked (fridge)'],'Rice & Curry':['Cooked rice','Chana masala prep','Chicken tikka prep','Curry topping','Falafel mix','Chapatis']};
+const PREP_TEMPLATES={'Burger Station':['Rosemary Salt','Shake Powder','Salt & Pepper','Aioli','Pesto Mayo','BBQ Sauce','FrogBurger Sauce','Mayonnaise','Mustard','Ketchup','IPA/Beer Mayo','Sesame Mayo','Sweet Chilli BBQ','Korean Sauce','Onion Jam','Fried Onion','Deep Fried Onion','Blue Cheese','Cheddar','Mozza','Smoked Cheddar','Fries','Sweetpotato Fries','Carotte rapé','Coleslaw','Coleslaw dry mix','Chou rouge mariné','Coconut Raita','Iceberg (shredded)','Onion sliced','Pickles','Poivron rouge grillé','Rocket','Salsa Maison','Tomato slices','Pickled red onions','Jalapeños','Burger buns','Frogburger buns','Vegan buns','Burger patties (140g)','Chicken Fillets','Chicken Burger portions','Chicken Tenders','Chicken Loaded Fries','Chicken NYC Club','Chicken Quesadillas','Chicken Quesadillas Mix','Fish + Batter','Bacon','Jambon Serrano','Pulled Pork balls','Falafel','Steaks','Smoked Salmon'],'Sauces & Sides':['Cheese Sauce','Chopped Pickles','Chopped Coriander','Chopped Jalapeños','Chopped Rocket','César Sauce','Guacamole','Crème Fraîche','Lime Mayo','Lemon','Croutons','Crispy Noodles','Crispy Chickpeas','Puffed Rice','Oil & Lemon Dressing','Salsa Sauce','Sliced Chillies','Sriracha Mayo','Ribs Glaze','Tartar Sauce','Vegan Nacho Sauce','Wings Sauce'],'Snacks & KSM':['Mozza Sticks','Chicken Wings (raw + prepped)','Nachos','Gyoza (veggie)','Mac & Cheese Balls','Onion Rings','Sweet Potato Fries','Sweetcorn Fritters','Panko Mushrooms','Panko Eggs','Poppadoms','Fried Onion (crispy)','Snack Powder','Icing Sugar','Coriander (fresh)','Spring Onion (sliced)','Coleslaw'],'Desserts':['NY Cheesecake','Hazelnut Mousse','Tiramisu','Chai Mousse','Café Gourmand','Waffles','Churros','Apple Pie','Oreo Stack','Mousse au Chocolat','Chantilly Cream','Chocolate Sauce','Lemon Sauce','Peanut Sauce','Raspberry (fresh)','Red Fruit Coulis','White Chocolate Sauce','Nutella','Pistachio Cream','Caramelized Nuts'],'Salad Station':['Crudités','Vinaigrette','Tomato Dressing','Fresca Honey','Crème Fraîche','Vinegar','Demi-duxelles','Demi-brunoise','Forest Mushrooms','Beetroot','Feta','Avocado','Broccoli','Blanched Vegetables','Spring Peas','Rocket','Iceberg','Chou rouge (mariné)','Carotte rapé','House Salad mix','Salsa Maison','Greek Salad components','Boiled Eggs','Sweet Potato (grilled)','Lentil & Spelt mix','Shaved Parmigiano','White & Black Sesame','Chickpea Salad','Potato Salad','Pomegranate seeds','Cucumber sliced','Cucumber diced','Cucumber kimchi','Chapati Wraps','Tortillas'],'Rice & Curry':['Cooked Rice','Chana Masala','Chicken Tikka prep','Curry Topping','Falafel Mix','Chapatis','Mango Chutney','Poppadoms'],'Defrosting':['Guacamole (fridge)','Tortillas (fridge)','Pulled Pork (fridge)','Ribs (fridge)','Salmon (fridge)','Buns (fridge)','Hot Dog Breads (fridge)','NYC Club Bread (fridge)','Chapatis (fridge)','Nachos (fridge)','Avocado slices (fridge)','Chicken pre-cooked (fridge)']};
 
 let S={d:'',sh:'AM',team:[],e86:[],comms:[],preps:[],dels:[],stC:{},clC:{},psC:{},ho:{c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:'',tasks:'',cleanCalm:'',resas:'',specials:''},allergens:[],equip:[],plan:{a:'',b:'',c:''},feedback:[],clAssign:{},stickies:[],actionPlan:[]};
 let undoStack=null,undoTimer=null,toastTimer=null;
@@ -1384,6 +1673,29 @@ function rDlc(){var c=document.getElementById('dlcRef');if(!c)return;var h='';va
 function updDlc(cat,i,val){var d=getDlcData();if(d[cat]&&d[cat][i]){d[cat][i][1]=val;saveCfg()}}
 function addDlcItem(cat){var h='<div style="font-size:17px;font-weight:700;margin-bottom:16px">Add DLC Item</div><div style="display:flex;flex-direction:column;gap:12px"><div><label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block">Item name</label><input class="fi" id="dlcNewName" placeholder="e.g. Chicken breast"></div><div><label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block">Shelf life</label><input class="fi" id="dlcNewLife" placeholder="e.g. 3 days or 0-4°C"></div></div>';document.getElementById('moT').innerHTML=h;document.getElementById('moM').textContent='';document.getElementById('moOk').textContent='Add';document.getElementById('moOk').onclick=function(){var name=document.getElementById('dlcNewName').value.trim();var val=document.getElementById('dlcNewLife').value.trim();if(!name){toast('Enter item name');return}if(!val){toast('Enter shelf life');return}var d=getDlcData();if(!d[cat])d[cat]=[];d[cat].push([name,val]);saveCfg();rDlc();hideModal();toast(name+' added')};document.getElementById('modal').classList.add('show');setTimeout(function(){document.getElementById('dlcNewName').focus()},300)}
 function delDlcItem(cat,i){var d=getDlcData();if(d[cat]&&d[cat][i]){var name=d[cat][i][0];d[cat].splice(i,1);saveCfg();rDlc();toast(name+' removed')}}
+
+// -- DLC TRACKER (B3) --
+function getDtkData(){if(!CFG.dlcTrack)CFG.dlcTrack=[];return CFG.dlcTrack}
+function parseDlcLife(life){var s=life.toLowerCase().replace(/[*~]/g,'');var m=s.match(/(\d+)\s*(day|jour|hr|hour|heure)/i);if(m){var n=parseInt(m[1]);if(/hr|hour|heure/i.test(m[2]))return n*3600000;return n*86400000}if(/see label|sur étiquette/i.test(s))return 5*86400000;return 3*86400000}
+function dtkTimeLeft(expiry){var now=Date.now();var ms=expiry-now;var abs=Math.abs(ms);var h=Math.floor(abs/3600000);var d=Math.floor(h/24);var rh=h%24;if(ms<0)return{text:d>0?d+'d '+rh+'h overdue':h+'h overdue',cls:'dt-red',prio:3};if(ms<86400000)return{text:h+'h left',cls:'dt-amber',prio:2};if(ms<172800000)return{text:'~'+d+'d '+rh+'h',cls:'dt-yellow',prio:1};return{text:d+'d '+rh+'h',cls:'dt-green',prio:0}}
+function rDtkTrack(){var c=document.getElementById('dtkList');if(!c)return;var items=getDtkData();if(!items.length){c.innerHTML='<div class="dt-empty">Tap + to track an opened/prepped item</div>';var st=document.getElementById('dtkN');if(st)st.textContent='No items tracked';var bd=document.getElementById('dtkB');if(bd)bd.style.display='none';return}
+  var sorted=items.map(function(it,i){var tl=dtkTimeLeft(it.expiry);return{it:it,i:i,tl:tl}}).sort(function(a,b){return b.tl.prio-a.tl.prio||a.it.expiry-b.it.expiry});
+  var h='';var nUrg=0;sorted.forEach(function(r){if(r.tl.prio>=2)nUrg++;h+='<div class="dt-item '+r.tl.cls+'"><span class="dt-ico">'+(r.tl.prio>=2?'\u{1F525}':r.tl.prio===1?'\u{26A0}':'\u{2705}')+'</span><div class="dt-body"><div class="dt-name">'+esc(r.it.n)+'</div><div class="dt-meta">'+esc(r.it.cat)+' \u{2022} opened '+esc(fmtDtkDate(r.it.opened))+'</div></div><span class="dt-countdown">'+esc(r.tl.text)+'</span><button class="dt-del" onclick="delDtk('+r.i+')">&times;</button></div>'});
+  c.innerHTML=h;
+  var st=document.getElementById('dtkN');if(st)st.textContent=items.length+' tracked'+(nUrg>0?' \u{2022} '+nUrg+' urgent':'');
+  var bd=document.getElementById('dtkB');if(bd){if(nUrg>0){bd.textContent=nUrg;bd.style.display=''}else{bd.style.display='none'}}}
+function fmtDtkDate(ts){var d=new Date(ts);var now=new Date();var diff=now-d;if(diff<86400000)return'today '+d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes();if(diff<172800000)return'yesterday';return d.getDate()+'/'+(d.getMonth()+1)+' '+d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes()}
+function showDtkSheet(){var dlc=getDlcData();var cats=Object.keys(dlc);var h='<div style="font-size:17px;font-weight:700;margin-bottom:16px">Track DLC Item</div>';h+='<div style="display:flex;flex-direction:column;gap:12px">';h+='<div><label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block">Category</label><select class="fi" id="dtkCatSel" onchange="dtkCatChanged()" style="min-height:44px">';cats.forEach(function(c){h+='<option value="'+esc(c)+'">'+esc(c)+'</option>'});h+='</select></div>';
+  h+='<div><label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block">Item</label><select class="fi" id="dtkItemSel" style="min-height:44px"></select></div>';
+  h+='<div><label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block">Opened / prepped</label><select class="fi" id="dtkWhen" style="min-height:44px"><option value="now">Just now</option><option value="1h">1 hour ago</option><option value="2h">2 hours ago</option><option value="today-am">This morning (7:00)</option><option value="yesterday">Yesterday same time</option><option value="yesterday-am">Yesterday morning (7:00)</option></select></div>';
+  h+='</div>';
+  document.getElementById('moT').innerHTML=h;document.getElementById('moM').textContent='';document.getElementById('moOk').textContent='Track';document.getElementById('moOk').onclick=dtkConfirmAdd;document.getElementById('modal').classList.add('show');setTimeout(function(){dtkCatChanged()},50)}
+function dtkCatChanged(){var cat=document.getElementById('dtkCatSel').value;var dlc=getDlcData();var items=dlc[cat]||[];var sel=document.getElementById('dtkItemSel');var h='';items.forEach(function(it){h+='<option value="'+esc(it[0])+'">'+esc(it[0])+' ('+esc(it[1])+')</option>'});sel.innerHTML=h}
+function dtkConfirmAdd(){var cat=document.getElementById('dtkCatSel').value;var sel=document.getElementById('dtkItemSel');var itemName=sel.value;if(!itemName){toast('Pick an item');return}var lifeStr=sel.options[sel.selectedIndex].textContent.match(/\(([^)]+)\)/);lifeStr=lifeStr?lifeStr[1]:'3 days';var when=document.getElementById('dtkWhen').value;var now=Date.now();var opened=now;if(when==='1h')opened=now-3600000;else if(when==='2h')opened=now-7200000;else if(when==='today-am'){var d=new Date();d.setHours(7,0,0,0);opened=d.getTime()}else if(when==='yesterday')opened=now-86400000;else if(when==='yesterday-am'){var d2=new Date();d2.setDate(d2.getDate()-1);d2.setHours(7,0,0,0);opened=d2.getTime()}
+  var lifeMs=parseDlcLife(lifeStr);var expiry=opened+lifeMs;var items=getDtkData();var dup=items.find(function(x){return x.n===itemName&&Math.abs(x.opened-opened)<3600000});if(dup){toast('Already tracking '+itemName);return}
+  items.push({n:itemName,cat:cat,life:lifeStr,opened:opened,expiry:expiry,id:now});saveCfg();hideModal();rDtkTrack();uUrgent();toast(itemName+' tracked \u{23F0}')}
+function delDtk(i){var items=getDtkData();if(items[i]){var name=items[i].n;items.splice(i,1);saveCfg();rDtkTrack();uUrgent();toast(name+' removed')}}
+function dtkUrgentCount(){var items=getDtkData();var n=0;items.forEach(function(it){var tl=dtkTimeLeft(it.expiry);if(tl.prio>=2)n++});return n}
 
 // -- ALLERGEN REFERENCE GUIDE --
 function getAlgRefData(){if(!CFG.algRef){CFG.algRef={};for(var k in ALG_REF_DEFAULT){if(ALG_REF_DEFAULT.hasOwnProperty(k))CFG.algRef[k]=ALG_REF_DEFAULT[k].slice()}}return CFG.algRef}
@@ -1611,31 +1923,34 @@ function chgDate(){save();S.d=document.getElementById('shiftDate').value;load();
 function tog(id){var el=document.getElementById(id);el.classList.toggle('open');_userOpenedCards[id]=true}
 function scrollToCard(id){var el=document.getElementById(id);if(!el)return;if(!el.classList.contains('open'))el.classList.add('open');el.scrollIntoView({behavior:'smooth',block:'start'})}
 
-function renderAll(){rTeam();r86();rComms();rPreps();rDels();rSt();rPs();rCl();rCls();rHo();rHist();rAlg();rEq();rPlan();rFeedback();rDlc();rAlgRef();rActionPlan();uBadges();uProg();r86Hist();uUrgent()}
+function renderAll(){rTeam();r86();rComms();rPreps();rDels();rSt();rPs();rCl();rCls();rHo();rHist();rAlg();rEq();rPlan();rFeedback();rDlc();rAlgRef();rActionPlan();rDtkTrack();rAuditHistory();rFT();uBadges();uProg();r86Hist();uUrgent()}
 
 // -- ACTIVE ITEMS ZONE --
 function uUrgent(){
   var n86=S.e86.length;
   var nAlg=S.allergens.filter(function(a){return !a.ack}).length;
   var nEq=S.equip.filter(function(e){return !e.resolved}).length;
-  var el86=document.getElementById('uz86'),elAlg=document.getElementById('uzAlg'),elEq=document.getElementById('uzEq');
+  var nDlc=dtkUrgentCount();
+  var el86=document.getElementById('uz86'),elAlg=document.getElementById('uzAlg'),elEq=document.getElementById('uzEq'),elDlc=document.getElementById('uzDlc');
   el86.textContent=n86;el86.className='uz-num '+(n86>0?'prio-amber':'prio-grey');
   elAlg.textContent=nAlg;elAlg.className='uz-num '+(nAlg>0?'prio-red':'prio-grey');
   elEq.textContent=nEq;elEq.className='uz-num '+(nEq>0?'prio-amber':'prio-grey');
+  if(elDlc){elDlc.textContent=nDlc;elDlc.className='uz-num '+(nDlc>0?'prio-red':'prio-grey')}
   var uz=document.getElementById('urgentZone');
-  var total=n86+nAlg+nEq;
+  var total=n86+nAlg+nEq+nDlc;
   var uzClear=document.getElementById('uzClear');
-  if(total===0){uz.classList.remove('uz-active');if(uzClear){uzClear.style.display='block';el86.parentElement.style.display='none';elAlg.parentElement.style.display='none';elEq.parentElement.style.display='none'}}
-  else{uz.classList.add('uz-active');if(uzClear){uzClear.style.display='none';el86.parentElement.style.display='';elAlg.parentElement.style.display='';elEq.parentElement.style.display=''}}
+  if(total===0){uz.classList.remove('uz-active');if(uzClear){uzClear.style.display='block';el86.parentElement.style.display='none';elAlg.parentElement.style.display='none';elEq.parentElement.style.display='none';if(elDlc)elDlc.parentElement.style.display='none'}}
+  else{uz.classList.add('uz-active');if(uzClear){uzClear.style.display='none';el86.parentElement.style.display='';elAlg.parentElement.style.display='';elEq.parentElement.style.display='';if(elDlc)elDlc.parentElement.style.display=''}}
   var c86=document.getElementById('c-86'),cAlg=document.getElementById('c-alg'),cEq=document.getElementById('c-eq');
   if(c86)c86.className='cd'+(n86>0?' cd-prio-amber':'');
   if(cAlg)cAlg.className='cd'+(nAlg>0?' cd-prio-red':'');
   if(cEq)cEq.className='cd'+(nEq>0?' cd-prio-amber':'');
+  var cDtk=document.getElementById('c-dtk');if(cDtk)cDtk.className='cd'+(nDlc>0?' cd-prio-red':'');
   // Next Action line
   var nextEl=document.getElementById('uzNext');
   if(nextEl){
     if(total===0){if(focusOn){nextEl.innerHTML='<span class="uz-next-msg" style="font-size:11px;opacity:0.7;font-style:italic" id="focus-indicator">\u{1F3AF} Focus mode — only urgent cards</span>'}else{nextEl.innerHTML='<span class="uz-next-clear">All clear \u{2728}</span>'}nextEl.style.display='block'}
-    else{var msg='';if(nAlg>0){var a=S.allergens.find(function(x){return !x.ack});if(a)msg='\u{1F480} '+a.allergens.join(', ')+' — '+a.context}else if(n86>0){var item=S.e86[S.e86.length-1];msg='\u{1F52A} '+(typeof item==='object'?item.n:item)+' just got 86\'d'}else if(nEq>0){var eq=S.equip.find(function(x){return !x.resolved});if(eq)msg='\u{1F527} '+eq.name+' — '+eq.issue}if(msg){nextEl.innerHTML='<span class="uz-next-msg">'+esc(msg)+'</span>';nextEl.style.display='block'}else{nextEl.style.display='none'}}}
+    else{var msg='';if(nAlg>0){var a=S.allergens.find(function(x){return !x.ack});if(a)msg='\u{1F480} '+a.allergens.join(', ')+' — '+a.context}else if(nDlc>0){var dItems=getDtkData();var worst=null;dItems.forEach(function(it){var tl=dtkTimeLeft(it.expiry);if(tl.prio>=2&&(!worst||it.expiry<worst.expiry))worst=it});if(worst)msg='\u{23F0} '+worst.n+' — '+dtkTimeLeft(worst.expiry).text}else if(n86>0){var item=S.e86[S.e86.length-1];msg='\u{1F52A} '+(typeof item==='object'?item.n:item)+' just got 86\'d'}else if(nEq>0){var eq=S.equip.find(function(x){return !x.resolved});if(eq)msg='\u{1F527} '+eq.name+' — '+eq.issue}if(msg){nextEl.innerHTML='<span class="uz-next-msg">'+esc(msg)+'</span>';nextEl.style.display='block'}else{nextEl.style.display='none'}}}
   // Cross-tab allergen banner
   var banner=document.getElementById('algBanner');
   if(banner){if(nAlg>0){banner.innerHTML='\u{1F480} '+nAlg+' allergen'+(nAlg>1?'s':'')+' active';banner.style.display='block'}else{banner.style.display='none'}}
@@ -2582,7 +2897,144 @@ var liveSaveTimer;document.addEventListener('input',function(e){if(e.target.clos
 
 // -- RENDER SAFETY WRAPPERS --
 function safeRender(fn,name){return function(){try{fn.apply(this,arguments)}catch(e){console.error('['+name+'] render error:',e);toast('Display glitch \u2014 try refreshing')}}}
-;['renderAll','rAlg','r86','rEq','rPreps','rFeedback','rComms','rDels','rSt','rPs','rCl','rCls','rHo','rCfg','rDlc','rAlgRef','uProg','uUrgent','uBadges','rDelegSummary','rShiftSummary','rHist','rProducts','rSuppliers','rTeam','rActionPlan'].forEach(function(name){if(typeof window[name]==='function')window[name]=safeRender(window[name],name)});
+;['renderAll','rAlg','r86','rEq','rPreps','rFeedback','rComms','rDels','rSt','rPs','rCl','rCls','rHo','rCfg','rDlc','rAlgRef','uProg','uUrgent','uBadges','rDelegSummary','rShiftSummary','rHist','rProducts','rSuppliers','rTeam','rActionPlan','rDtkTrack','rAuditHistory','rFT'].forEach(function(name){if(typeof window[name]==='function')window[name]=safeRender(window[name],name)});
+
+// -- B2: GLOBAL SEARCH (Cmd+K) --
+function openGlobalSearch(){
+  document.getElementById('gsOverlay').classList.add('show');
+  var inp=document.getElementById('gsInput');
+  inp.value='';
+  gsSearch();
+  setTimeout(function(){inp.focus()},200);
+}
+function closeGlobalSearch(){
+  document.getElementById('gsOverlay').classList.remove('show');
+}
+function gsSearch(){
+  var q=(document.getElementById('gsInput').value||'').trim().toLowerCase();
+  var res=document.getElementById('gsResults');
+  if(!q){res.innerHTML='<div class="gs-hint">Search DLC, allergens, SOPs, products, suppliers, menu, preps, shift data...</div>';return}
+  var results=[];
+  // DLC items
+  var dlcData=getDlcData();
+  for(var cat in dlcData){if(!dlcData.hasOwnProperty(cat))continue;
+    dlcData[cat].forEach(function(item){
+      if(item[0].toLowerCase().indexOf(q)!==-1||item[1].toLowerCase().indexOf(q)!==-1)
+        results.push({ico:cat==='Key Temps'?'\u{1F321}':'\u{1F4C5}',title:item[0],sub:item[1]+' — '+cat,tag:'DLC',tagCls:'gs-tag-dlc',action:function(){closeGlobalSearch();go('more');setTimeout(function(){scrollToCard('c-dlc')},200)}})
+    })}
+  // Allergen reference
+  var algData=getAlgRefData();
+  for(var alg in algData){if(!algData.hasOwnProperty(alg))continue;
+    if(alg.toLowerCase().indexOf(q)!==-1)
+      results.push({ico:'\u{26A0}',title:alg,sub:(algData[alg]||[]).slice(0,4).join(', ')+(algData[alg].length>4?' +more':''),tag:'Allergen',tagCls:'gs-tag-alg',action:function(){closeGlobalSearch();go('more');setTimeout(function(){scrollToCard('c-algref')},200)}});
+    algData[alg].forEach(function(item){
+      if(item.toLowerCase().indexOf(q)!==-1)
+        results.push({ico:'\u{26A0}',title:item,sub:'Contains: '+alg,tag:'Allergen',tagCls:'gs-tag-alg',action:function(){closeGlobalSearch();go('more');setTimeout(function(){scrollToCard('c-algref')},200)}})})}
+  // SOPs
+  if(typeof SOP_REF!=='undefined')SOP_REF.forEach(function(sop){
+    if(sop.title.toLowerCase().indexOf(q)!==-1||sop.steps.toLowerCase().indexOf(q)!==-1||sop.cat.toLowerCase().indexOf(q)!==-1)
+      results.push({ico:sop.ico,title:sop.title,sub:sop.cat+' — '+sop.steps.split('\n')[0],tag:'SOP',tagCls:'gs-tag-sop',action:function(){closeGlobalSearch();openKI(sop.title)}})});
+  // Products
+  CFG.products.forEach(function(p){
+    if(p.n.toLowerCase().indexOf(q)!==-1||(p.cat||'').toLowerCase().indexOf(q)!==-1)
+      results.push({ico:'\u{1F4E6}',title:p.n,sub:(p.cat||'')+(p.buy?' — Buy €'+p.buy.toFixed(2):'')+(p.sell?' / Sell €'+p.sell.toFixed(2):''),tag:'Product',tagCls:'gs-tag-product',action:function(){closeGlobalSearch();go('more');setTimeout(function(){scrollToCard('c-products')},200)}})});
+  // Suppliers
+  CFG.suppliers.forEach(function(s){
+    if(s.n.toLowerCase().indexOf(q)!==-1)
+      results.push({ico:'\u{1F69B}',title:s.n,sub:(s.prods||[]).slice(0,3).join(', ')||(s.note||''),tag:'Supplier',tagCls:'gs-tag-supplier',action:function(){closeGlobalSearch();go('more');setTimeout(function(){scrollToCard('c-suppliers')},200)}})});
+  // Menu items
+  for(var mCat in MENU){if(!MENU.hasOwnProperty(mCat))continue;
+    MENU[mCat].forEach(function(item){
+      if(item.toLowerCase().indexOf(q)!==-1)
+        results.push({ico:'\u{1F37D}',title:item,sub:mCat,tag:'Menu',tagCls:'gs-tag-menu',action:function(){closeGlobalSearch()}})})}
+  // Prep templates
+  var tpls=CFG.prepTemplates||PREP_TEMPLATES;
+  for(var tCat in tpls){if(!tpls.hasOwnProperty(tCat))continue;
+    tpls[tCat].forEach(function(item){
+      if(item.toLowerCase().indexOf(q)!==-1)
+        results.push({ico:'\u{26A1}',title:item,sub:'Template: '+tCat,tag:'Prep',tagCls:'gs-tag-prep',action:function(){closeGlobalSearch();go('shift');setTimeout(function(){scrollToCard('c-prep')},200)}})})}
+  // Current shift 86'd
+  S.e86.forEach(function(item){
+    var n=typeof item==='object'?item.n:item;
+    if(n.toLowerCase().indexOf(q)!==-1)
+      results.push({ico:'\u{1F52A}',title:n,sub:'86\'d this shift'+(item.ts?' at '+item.ts:''),tag:'Shift',tagCls:'gs-tag-shift',action:function(){closeGlobalSearch();go('shift');setTimeout(function(){scrollToCard('c-86')},200)}})});
+  // Current shift equipment
+  S.equip.forEach(function(e){
+    if(e.name.toLowerCase().indexOf(q)!==-1||e.issue.toLowerCase().indexOf(q)!==-1)
+      results.push({ico:'\u{1F527}',title:e.name,sub:e.issue+(e.resolved?' (resolved)':''),tag:'Shift',tagCls:'gs-tag-shift',action:function(){closeGlobalSearch();go('shift');setTimeout(function(){scrollToCard('c-eq')},200)}})});
+  // Current shift preps
+  S.preps.forEach(function(p){
+    if(p.t&&p.t.toLowerCase().indexOf(q)!==-1)
+      results.push({ico:p.done?'✅':'\u{26A1}',title:p.t,sub:(p.who||'Unassigned')+(p.done?' — Done':''),tag:'Shift',tagCls:'gs-tag-shift',action:function(){closeGlobalSearch();go('shift');setTimeout(function(){scrollToCard('c-prep')},200)}})});
+  // Roster
+  CFG.roster.forEach(function(r){
+    if(r.n.toLowerCase().indexOf(q)!==-1||(r.s||'').toLowerCase().indexOf(q)!==-1)
+      results.push({ico:'\u{1F451}',title:r.n,sub:r.s||'No section',tag:'Roster',tagCls:'gs-tag-supplier',action:function(){closeGlobalSearch();go('more');setTimeout(function(){scrollToCard('c-roster')},200)}})});
+  // FT Library
+  FT_LIB.forEach(function(ft){
+    if(ft.name.toLowerCase().indexOf(q)!==-1||ft.station.toLowerCase().indexOf(q)!==-1||(ft.ingredients||'').toLowerCase().indexOf(q)!==-1)
+      results.push({ico:'\u{1F372}',title:ft.name,sub:ft.station+(ft.cooking?' — '+ft.cooking.split('.')[0]:''),tag:'FT',tagCls:'gs-tag-menu',action:function(){closeGlobalSearch();go('more');setTimeout(function(){scrollToCard('c-ft');togFT(ft.id)},200)}})});
+  FT_SUBS.forEach(function(s){
+    if(s.name.toLowerCase().indexOf(q)!==-1||s.recipe.toLowerCase().indexOf(q)!==-1)
+      results.push({ico:'\u{1F963}',title:s.name,sub:'DLC: '+s.dlc+' / '+s.recipe.substring(0,60),tag:'Sub-recipe',tagCls:'gs-tag-menu',action:function(){closeGlobalSearch();go('more');setTimeout(function(){scrollToCard('c-ft')},200)}})});
+  // Audit history
+  (CFG.auditHistory||[]).forEach(function(a){
+    var txt=a.date+' '+a.shift+' — '+a.score+'/50 ('+a.grade+')';
+    if(txt.toLowerCase().indexOf(q)!==-1||'audit silliker hygiene'.indexOf(q)!==-1)
+      results.push({ico:'\u{1F50D}',title:'Audit '+a.date+' '+a.shift,sub:a.score+'/50 ('+a.pct+'%) Grade '+a.grade+(a.fails.length?' — '+a.fails.length+' fails':''),tag:'Audit',tagCls:'gs-tag-sop',action:function(){closeGlobalSearch();go('check');setTimeout(function(){scrollToCard('c-audit')},200)}})});
+  // Deduplicate by title+tag
+  var seen={};
+  results=results.filter(function(r){var k=r.title+'|'+r.tag;if(seen[k])return false;seen[k]=true;return true});
+  // Render
+  if(!results.length){res.innerHTML='<div class="gs-empty">No results for "'+esc(q)+'"</div>';return}
+  // Group by tag
+  var groups={};results.slice(0,60).forEach(function(r){if(!groups[r.tag])groups[r.tag]=[];groups[r.tag].push(r)});
+  var h='';
+  for(var g in groups){
+    h+='<div class="gs-group-label">'+esc(g)+' ('+groups[g].length+')</div>';
+    groups[g].forEach(function(r,ri){
+      h+='<div class="gs-item" onclick="gsResults[\''+g+'_'+ri+'\'].action()" data-gs="'+g+'_'+ri+'"><span class="gs-item-ico">'+r.ico+'</span><div class="gs-item-body"><div class="gs-item-title">'+esc(r.title)+'</div><div class="gs-item-sub">'+esc(r.sub)+'</div></div><span class="gs-item-tag '+r.tagCls+'">'+esc(r.tag)+'</span></div>'})}
+  res.innerHTML=h;
+  // Store action references
+  window.gsResults={};
+  var idx2={};results.slice(0,60).forEach(function(r){if(!idx2[r.tag])idx2[r.tag]=0;window.gsResults[r.tag+'_'+idx2[r.tag]]=r;idx2[r.tag]++});
+}
+// Keyboard shortcut: Cmd+K / Ctrl+K
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();var ov=document.getElementById('gsOverlay');if(ov.classList.contains('show'))closeGlobalSearch();else openGlobalSearch()}
+  if(e.key==='Escape'){var ov2=document.getElementById('gsOverlay');if(ov2&&ov2.classList.contains('show')){closeGlobalSearch();e.preventDefault()}}
+});
+
+// -- D1: INDEXEDDB PERSISTENCE LAYER --
+var _idb=null;
+function idbOpen(){return new Promise(function(resolve,reject){
+  if(_idb){resolve(_idb);return}
+  if(!window.indexedDB){reject('no idb');return}
+  var req=indexedDB.open('alexApp',1);
+  req.onupgradeneeded=function(e){var db=e.target.result;if(!db.objectStoreNames.contains('shifts'))db.createObjectStore('shifts');if(!db.objectStoreNames.contains('meta'))db.createObjectStore('meta')};
+  req.onsuccess=function(e){_idb=e.target.result;resolve(_idb)};
+  req.onerror=function(){reject('idb open error')}})}
+function idbPut(store,key,val){idbOpen().then(function(db){var tx=db.transaction(store,'readwrite');tx.objectStore(store).put(val,key)}).catch(function(){})}
+function idbGet(store,key){return idbOpen().then(function(db){return new Promise(function(resolve){var tx=db.transaction(store,'readonly');var req=tx.objectStore(store).get(key);req.onsuccess=function(){resolve(req.result)};req.onerror=function(){resolve(null)}})})}
+function idbDel(store,key){idbOpen().then(function(db){var tx=db.transaction(store,'readwrite');tx.objectStore(store).delete(key)}).catch(function(){})}
+function idbSaveShift(){idbPut('shifts',S.d+'_'+S.sh,JSON.parse(JSON.stringify(S)))}
+function idbSaveCfg(){idbPut('meta','cfg',JSON.parse(JSON.stringify(CFG)));idbPut('meta','idx',JSON.parse(localStorage.getItem(K+'idx')||'[]'))}
+function idbRecoverCfg(){return idbGet('meta','cfg').then(function(data){if(data){var ls=localStorage.getItem(CFG_KEY);if(!ls||ls==='{}'){localStorage.setItem(CFG_KEY,JSON.stringify(data));loadCfg();renderAll();console.log('[IDB] CFG recovered');return true}}return false}).catch(function(){return false})}
+function idbRecoverShift(dateShift){return idbGet('shifts',dateShift).then(function(data){if(data){var lsKey=K+dateShift;var ls=localStorage.getItem(lsKey);if(!ls){localStorage.setItem(lsKey,JSON.stringify(data));console.log('[IDB] Shift recovered: '+dateShift);return true}}return false}).catch(function(){return false})}
+function idbMigrate(){idbOpen().then(function(db){
+  idbSaveCfg();idbSaveShift();
+  var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');
+  idx.forEach(function(key){var data=localStorage.getItem(K+key);if(data)idbPut('shifts',key,JSON.parse(data))});
+  console.log('[IDB] Migration complete: cfg + '+idx.length+' shifts')
+}).catch(function(e){console.log('[IDB] Migration skipped:',e)})}
+// Hook into existing save functions
+var _origSave=save;
+save=function(){_origSave();idbSaveShift()};
+var _origSaveCfg=saveCfg;
+saveCfg=function(){_origSaveCfg();idbSaveCfg()};
+// Boot: migrate existing data and set up recovery
+setTimeout(function(){idbMigrate();idbRecoverCfg()},1000);
+
 init();
 
 // -- SWIPE TO DELETE --
@@ -2753,7 +3205,16 @@ var SOP_REF=[
 {cat:'Handover',title:'Shift handover',steps:'Shift data\'s already in there \u2728\nAnything weird or unfinished? Drop it in\nWho\'s up next?\nThat\'s a wrap \u{1F9DA}',ico:'\u{1F4CB}'},
 {cat:'KSM Standards',title:'What good looks like',steps:'Kitchen clean + organised before, during AND after\nTeam briefed: roles, prep, deadlines, events\nDLC checks done \u2014 walk-in, fridges, dry store\nComms to FOH clear + proactive (86s, allergens, timings)\nHandover complete so next shift isn\'t guessing\nPrep plan realistic \u2014 deadlines met, delegation clear',ico:'\u{1F451}'},
 {cat:'KSM Standards',title:'Growth areas to watch',steps:'Confidence under pressure \u2014 own the pass, don\'t defer\nTime management \u2014 prep before panic\nStack attention \u2014 plates out hot, looking right\nWaste tracking \u2014 log it, learn from patterns\nTeam development \u2014 feedback after every shift\nStock ordering \u2014 anticipate, don\'t react',ico:'\u{1F4AA}'},
-{cat:'CSE Prep',title:'CSE readiness',steps:'50-point audit \u2014 know the criteria cold\nCustomer journey: greet < 30s, check back, farewell\nKitchen side: timings, presentation, allergen process\nTrail entries up to date\nCleaning records complete + signed\nNo shortcuts \u2014 if it\'s not logged it didn\'t happen',ico:'\u2b50'}
+{cat:'CSE Prep',title:'CSE readiness',steps:'50-point audit \u2014 know the criteria cold\nCustomer journey: greet < 30s, check back, farewell\nKitchen side: timings, presentation, allergen process\nTrail entries up to date\nCleaning records complete + signed\nNo shortcuts \u2014 if it\'s not logged it didn\'t happen',ico:'\u2b50'},
+{cat:'Cleaning',title:'Fryer deep clean',steps:'2x/week AM \u2014 gloves + HYSODEGRAIS + SOD 390\nDrain oil into blue bidons (cold oil only!)\nPaniers \u2192 plonge, wipe debris with paper\nDegrease bacs, rinse, dry thoroughly\nExternal surfaces: degrease \u2192 SOD 390 \u2192 rinse\nRefill with fresh oil + fill oil control sheet\nSign the weekly cleaning list',ico:'\ud83c\udf5f'},
+{cat:'Cleaning',title:'Microwave clean',steps:'End of every shift \u2014 5 min per microwave\nRemove debris, spray HYSODEGRAIS, wait 1 min\nRinse warm water, SOD 390 on externals\nDry with paper \u2014 DO NOT soak the plug\nSign end-of-shift cleaning checklist',ico:'\u2668\ufe0f'},
+{cat:'Cleaning',title:'Walk-in fridge clean',steps:'Weekly \u2014 2 people, 15 min per fridge\nEmpty it: check every DLC, bin expired (log waste!)\nHYSODEGRAIS walls + shelves + floor, wait 5 min\nScrub with steel wool, rinse, squeegee\nSOD 390 everything, wait 5 min, wipe dry\nRestock: FIFO \u2014 shortest DLC at front\nSign weekly cleaning checklist',ico:'\u2744\ufe0f'},
+{cat:'Cleaning',title:'Surface guide',steps:'Wood (tables/counter): SOD 390 spray + dry cloth\nInox (beam, Florigo, fridge): LLVM soapy water + paper\nPlastic floors (lino): LLVM 1 lid per 2L, brush, rinse\nGlass/mirrors/screens: Liquide vitre + 2-cloth method\nTiles (kitchen): SOD 390, brush, rinse, dry\nNEVER mix bleach with hot water',ico:'\u2728'},
+{cat:'Cleaning',title:'Grill clean',steps:'2x/day \u2014 end of AM + end of PM shift\nFilm + range ALL food before starting\nTurn off, remove grease tray \u2192 plonge sink\nSteel wool first pass while cooling\nDMS spray (5%) on COLD/warm surface only\nWait 5 min, scrub stubborn bits\nRinse clean water, dry with paper\nSign end-of-shift cleaning checklist',ico:'\ud83d\udd25'},
+{cat:'Food Safety',title:'Food storage & labels',steps:'Every prep \u2192 clean bac + lid or film\nHot food: cool FAST then fridge (never hot in fridge)\nFIFO always \u2014 shortest DLC at front\nLabel: date made, DLC, product name, cook name\nMax 3 days DLC for preps\nKeep original supplier labels in classeur\nNEVER refreeze a defrosted product',ico:'\ud83c\udff7\ufe0f'},
+{cat:'Prep Standards',title:'Mozza sticks 20g',steps:'1kg mozzarella pain (not pre-sliced)\nFlatten sides, cut 1.5cm thick slices\nEach slice \u2192 halve lengthwise \u2192 4 sticks = 20g\nBig piece: 10 cuts \u2192 11 pieces \u2192 turn \u2192 4 sticks\nExcess mozza \u2192 4-cheese quesadillas (40g each)\nScale check: every stick should hit 20g',ico:'\ud83e\uddc0'},
+{cat:'Cleaning',title:'Weekly deep clean',steps:'Mon\u2013Fri rotation \u2014 1 major task per day\nFryer: full drain + scrub + refill (2x/week)\nGrill: disassemble + deep scrub\nOven interior: full clean\nBain-marie: descale\nDrains: hot water pour (preventative)\nDry store: organise + check packaging + bin expired',ico:'\ud83d\udccb'},
+{cat:'CSE Prep',title:'GEM timing standards',steps:'Greeting: under 30 seconds after seating\nMenu presented: within 2 minutes\nDrinks served: 4 min after order\nFood served: 12 min after order max\nBill on request: within 2 minutes\nPayment processed: within 4 minutes\nManager visible + proactive table checks',ico:'\u23f1\ufe0f'}
 ];
 var kiTab='all';
 function openKI(prefilter){document.getElementById('kiOverlay').classList.add('show');kiTab='all';if(prefilter)document.getElementById('kiSearch').value=prefilter;else document.getElementById('kiSearch').value='';kiRender();setTimeout(function(){document.getElementById('kiSearch').focus()},300)}
@@ -2793,6 +3254,298 @@ function kiRender(){
   res.innerHTML=results.slice(0,50).map(function(r){
     var valHtml=r.valCls&&r.type!=='sop'?'<span class="ki-result-val '+r.valCls+'">'+esc(r.detail)+'</span>':'<div class="ki-result-detail">'+esc(r.detail)+'</div>';
     return '<div class="ki-result"><span class="ki-result-ico">'+r.ico+'</span><div class="ki-result-body"><div class="ki-result-title">'+esc(r.title)+'</div>'+valHtml+'<div class="ki-result-cat">'+esc(r.cat)+'</div></div></div>'}).join('')}
+
+// -- F1: FT LIBRARY --
+var FT_LIB=[
+  {id:'FT-01',name:'Smashburger Classic',station:'Grill',stCls:'grill',
+    ingredients:'Bun, FrogBurger sauce, cheddar, smashburger patty (140g → 2 balls), iceberg',
+    cooking:'Grill — smash, flip, cheese cloche. Probe temp 42-49°C. Bleu 33°C / A-Point 38-42°C / Bien Cuit 49°C+',
+    addons:'Fries, sweet potato fries, bang bang broccoli, beer battered mushrooms, onion rings, mac & cheese',
+    subs:[
+      {name:'FrogBurger Sauce',dlc:'3 days',batch:'875g',recipe:'Mayo 500g + Ketchup 250g + French\'s Mustard 125g'},
+      {name:'Salsa Maison',dlc:'2 days',batch:'1kg',recipe:'Tomatoes 1kg + Red onion 800g + Coriander 40g + Salt 120g + Olive oil + Lime juice 10g + 2 limes'},
+      {name:'House Salad',dlc:'2 days',batch:'500g',recipe:'Rocket 250g + Iceberg 250g + Carrot rapé 250g + Chou rouge 75g + Salsa 75g'}
+    ]},
+  {id:'FT-02',name:'Korean Chicken Burger',station:'Burger',stCls:'grill',
+    ingredients:'Burger bun, Korean sauce, chicken, lettuce',
+    cooking:'Internal temp 42-49°C. Assembly steps 1-12B',
+    subs:[{name:'Korean Sauce',dlc:'—',batch:'—',recipe:'Soya sauce 500g + Gochujang 300g + Honey 60g + 4 more'}]},
+  {id:'FT-03',name:'Grilled Chicken Protein Bowl',station:'Salad / Grill',stCls:'salad',
+    ingredients:'Grilled chicken, rocket, boiled egg, paprika yogurt, sweet potato, lentil & spelt mix, beetroot',
+    cooking:'Beetroot/sweet potato: 30s per side on grill',
+    nutrition:'Chicken 32g, Egg 6g, Yogurt 10g, Lentil/spelt 8.8g, Sweet potato 1.6g, Rocket 1g'},
+  {id:'FT-04',name:'Smoked Salmon & Egg Brioche',station:'Salad / Pass',stCls:'pass',
+    ingredients:'Pain lobster (1x), smoked salmon, soft-boiled egg, garnishes',
+    cooking:'Egg soft-boiled method. 8-step service sequence'},
+  {id:'FT-05',name:'Mediterranean Chicken Tacos',station:'Salad / Grill',stCls:'salad',
+    ingredients:'Taco tortillas, grilled chicken, Greek salad, salsa maison',
+    cooking:'Grill chicken. Variants: Princess, TLS, Bdx',
+    subs:[
+      {name:'Greek Salad',dlc:'—',batch:'—',recipe:'10 ingredients (with weights)'},
+      {name:'Salsa Maison',dlc:'2 days',batch:'1kg',recipe:'See FT-01'}
+    ]},
+  {id:'FT-06',name:'Kids Crunchy Chicken Tenders',station:'Fryer',stCls:'fryer',
+    ingredients:'Chicken tenders, batter',
+    cooking:'175°C frying. Specific count per serve'},
+  {id:'FT-07',name:'Kids Cheeseburger',station:'Grill',stCls:'grill',
+    ingredients:'70g patty (half of adult), bun, cheddar',
+    cooking:'Grill 180°C, internal temp 42-49°C. Steps 1-12B'},
+  {id:'FT-08',name:'Kids Churros',station:'Fryer / Dessert',stCls:'dessert',
+    ingredients:'2 churros, chantilly, chocolate sauce',
+    cooking:'Fry 5 minutes. Espresso cup holder, icing sugar'},
+  {id:'FT-09',name:'Beer Battered Mushrooms',station:'Fryer',stCls:'fryer',
+    ingredients:'Mushrooms, beer batter (1L + 20ml beer), beer mayo (2L), parsley (5g)',
+    cooking:'Deep fry',
+    subs:[{name:'Beer Mayo (IPA)',dlc:'4 days',batch:'1kg',recipe:'Mayo 830g + IPA 170g + Smoked paprika 1 tsp'}]},
+  {id:'FT-10',name:'NY Club Sandwich',station:'Grill / Pass',stCls:'pass',
+    ingredients:'Triple-decker sandwich build',
+    cooking:'Grill + assembly',
+    subs:[
+      {name:'Smoked Paprika Mayo',dlc:'2 days',batch:'1kg',recipe:'Mayo + Smoked paprika 10g'},
+      {name:'House Salad',dlc:'2 days',batch:'500g',recipe:'See FT-01'}
+    ]},
+  {id:'FT-11',name:'Korean Fried Chicken Bowl',station:'Fryer / Salad',stCls:'fryer',
+    ingredients:'100g rice, chicken tenders x3, Korean sauce 35g',
+    cooking:'175°C, 3-minute fry time',
+    subs:[
+      {name:'Asian Coleslaw',dlc:'—',batch:'—',recipe:'Part of bowl'},
+      {name:'Bang Bang Broccoli',dlc:'—',batch:'—',recipe:'Part of bowl'},
+      {name:'Korean Sauce',dlc:'—',batch:'—',recipe:'See FT-02'}
+    ]},
+  {id:'FT-12',name:'Mushroom Burger',station:'Grill',stCls:'grill',
+    ingredients:'Grilled chicken, garlic, sage, mushrooms',
+    cooking:'2-minute grill time'},
+  {id:'FT-13',name:'Smoked Pulled Pork',station:'Grill / Pass',stCls:'grill',
+    ingredients:'Pulled pork, cheddar, smoked cheese',
+    subs:[
+      {name:'Salsa Maison',dlc:'2 days',batch:'—',recipe:'See FT-01'},
+      {name:'Pepper Mayo',dlc:'4 days',batch:'—',recipe:'Part of build'},
+      {name:'Beer Broth',dlc:'—',batch:'—',recipe:'Part of build'}
+    ]},
+  {id:'FT-14',name:'Chicken Shrimp Plate',station:'Grill / Pass',stCls:'pass',
+    ingredients:'Full ingredient list (see original photo)',
+    cooking:'Grill + plating'},
+  {id:'FT-15',name:'Chicken Taco Variant',station:'Grill / Salad',stCls:'salad',
+    ingredients:'Variants: Princess, TLS, Bdx (location-specific builds)',
+    cooking:'Grill chicken',
+    subs:[{name:'Coleslaw',dlc:'2-3 days',batch:'—',recipe:'Standard coleslaw'}]}
+];
+var FT_SUBS=[
+  {name:'FrogBurger Sauce',dlc:'3 days',batch:'875g',recipe:'Mayo 500g + Ketchup 250g + French\'s Mustard 125g'},
+  {name:'IPA / Beer Mayo',dlc:'4 days',batch:'1kg',recipe:'Mayo 830g + IPA 170g + Smoked paprika 1 tsp'},
+  {name:'Salsa Maison',dlc:'2 days',batch:'1kg',recipe:'Tomatoes 1kg + Red onion 800g + Coriander 40g + Salt 120g + Olive oil + Lime juice'},
+  {name:'House Salad',dlc:'2 days',batch:'500g',recipe:'Rocket 250g + Iceberg 250g + Carrot rapé 250g + Chou rouge 75g + Salsa 75g'},
+  {name:'Sesame Mayo',dlc:'4 days',batch:'1kg',recipe:'Mayo 670g + Sesame oil 55g + Soya sauce 85g'},
+  {name:'Pickled Red Onions',dlc:'5 days',batch:'500g',recipe:'Red onions 500g + Salt 12g + Sugar 12g + Vinegar 125g'},
+  {name:'Korean Sauce',dlc:'—',batch:'—',recipe:'Soya sauce 500g + Gochujang 300g + Honey 60g + 4 more'},
+  {name:'Chicken Wing Sauce',dlc:'3 days',batch:'15 pcs',recipe:'Olive oil 60g + Garlic 80g + Soy 260ml + BBQ 540ml + Sriracha 30g + Paprika 10g + Beer 700ml + Brown sugar 200g'},
+  {name:'Chicken Wings Batter',dlc:'—',batch:'5kg raw',recipe:'Batter 400g + 1kg — fry 175°C, 4 min'},
+  {name:'Aioli',dlc:'3 days',batch:'1kg',recipe:'Mayo + Garlic'},
+  {name:'Sweet Chilli BBQ Sauce',dlc:'4 days',batch:'1kg',recipe:'500g sweet chilli + 500g BBQ'},
+  {name:'Cheese Sauce',dlc:'3 days',batch:'Various',recipe:'See photo (25g/200g/1kg/1L4L batch sizes)'},
+  {name:'Smoked Paprika Mayo',dlc:'2 days',batch:'1kg',recipe:'Mayo + Smoked paprika 10g'},
+  {name:'Coleslaw',dlc:'2-3 days',batch:'—',recipe:'Standard coleslaw'},
+  {name:'Greek Salad',dlc:'—',batch:'—',recipe:'10 ingredients'},
+  {name:'Asian Coleslaw',dlc:'—',batch:'—',recipe:'Part of Korean bowl'},
+  {name:'Bang Bang Broccoli',dlc:'—',batch:'—',recipe:'Part of Korean bowl'},
+  {name:'Pepper Mayo',dlc:'4 days',batch:'—',recipe:'Part of pulled pork build'}
+];
+function togFT(id){var el=document.getElementById('ft-body-'+id);if(el)el.classList.toggle('show')}
+function rFT(){
+  var q=(document.getElementById('ftSearch')||{}).value||'';q=q.toLowerCase().trim();
+  var el=document.getElementById('ftList');if(!el)return;
+  if(!FT_LIB||!FT_SUBS)return;
+  var filtered=FT_LIB.filter(function(ft){
+    if(!q)return true;
+    return ft.name.toLowerCase().indexOf(q)!==-1||ft.station.toLowerCase().indexOf(q)!==-1||(ft.ingredients||'').toLowerCase().indexOf(q)!==-1||(ft.subs||[]).some(function(s){return s.name.toLowerCase().indexOf(q)!==-1})
+  });
+  var subFiltered=!q?FT_SUBS:FT_SUBS.filter(function(s){return s.name.toLowerCase().indexOf(q)!==-1||s.recipe.toLowerCase().indexOf(q)!==-1});
+  var html=filtered.map(function(ft){
+    var subsHtml=(ft.subs||[]).map(function(s){return '<div class="ft-sub"><span class="ft-sub-title">'+esc(s.name)+'</span> — DLC: '+esc(s.dlc)+' / Batch: '+esc(s.batch)+'<br>'+esc(s.recipe)+'</div>'}).join('');
+    return '<div class="ft-card"><div class="ft-card-h" onclick="togFT(\''+ft.id+'\')"><span class="ft-station ft-station-'+ft.stCls+'">'+esc(ft.station)+'</span><span class="ft-name">'+esc(ft.name)+'</span><span class="ft-chv">▼</span></div><div class="ft-body" id="ft-body-'+ft.id+'"><dl>'+(ft.ingredients?'<dt>Ingredients</dt><dd>'+esc(ft.ingredients)+'</dd>':'')+(ft.cooking?'<dt>Cooking</dt><dd>'+esc(ft.cooking)+'</dd>':'')+(ft.addons?'<dt>Add-ons</dt><dd>'+esc(ft.addons)+'</dd>':'')+(ft.nutrition?'<dt>Protein</dt><dd>'+esc(ft.nutrition)+'</dd>':'')+'</dl>'+subsHtml+'</div></div>'
+  }).join('');
+  if(!q){
+    el.innerHTML=html;
+  } else {
+    var subHtml='';
+    if(subFiltered.length&&q){
+      subHtml='<div style="font-weight:700;font-size:12px;color:var(--text-muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.5px">Sub-recipes</div>';
+      subHtml+=subFiltered.map(function(s){return '<div class="ft-sub" style="margin-bottom:6px"><span class="ft-sub-title">'+esc(s.name)+'</span> — DLC: '+esc(s.dlc)+' / Batch: '+esc(s.batch)+'<br>'+esc(s.recipe)+'</div>'}).join('');
+    }
+    el.innerHTML=html+subHtml;
+  }
+  if(!filtered.length&&!subFiltered.length){el.innerHTML='<div class="empty-warm"><span class="ew-ico">\u{1F372}</span><span class="ew-msg">No FTs match "'+esc(q)+'"</span></div>'}
+}
+
+// -- B1: SILLIKER SELF-AUDIT (50-point Paul format) --
+var SA_DATA=[
+  {id:'s1',name:'Dry Store',max:3.5,items:[
+    {id:'1.1',text:'Well organized and clean',pts:1},
+    {id:'1.2',text:'State of packaging, its integrity and cleanliness',pts:1},
+    {id:'1.3',text:'No products present have passed their expiry date',pts:1.5}
+  ]},
+  {id:'s2',name:'Cold Storage & Fridges',max:4.5,items:[
+    {id:'2.1',text:'General cleanliness (surfaces, shelves, fridge joints)',pts:0.5},
+    {id:'2.2',text:'Thermometer or monitor present & reading max 4°C',pts:0.5},
+    {id:'2.3',text:'Efficient and labeled division of goods',pts:0.5},
+    {id:'2.4',text:'Products properly protected, identified and dated respecting expiry dates',pts:2},
+    {id:'2.5',text:'Appearance and freshness of products. Respects FIFO',pts:1}
+  ]},
+  {id:'s2a',name:'Walk-in & Service Fridges',max:5.5,items:[
+    {id:'2A.1',text:'General cleanliness (surfaces, shelves, fridge joints)',pts:0.5},
+    {id:'2A.2',text:'Thermometer or monitor present & reading max 4°C',pts:0.5},
+    {id:'2A.3',text:'Efficient and labeled division of goods',pts:0.5},
+    {id:'2A.4',text:'Products properly protected, identified and dated respecting expiry dates',pts:2.5},
+    {id:'2A.5',text:'Respects rules pertaining to recycling of leftovers (leftovers zone)',pts:0.5},
+    {id:'2A.6',text:'Appearance and freshness of products. Respects FIFO',pts:1}
+  ]},
+  {id:'s2b',name:'Freezers',max:5,items:[
+    {id:'2B.1',text:'General cleanliness (surfaces, shelves, fridge joints)',pts:0.5},
+    {id:'2B.2',text:'Thermometer or monitor present & reading min -18°C',pts:0.5},
+    {id:'2B.3',text:'Efficient and labeled division of goods',pts:0.5},
+    {id:'2B.4',text:'Products properly protected, identified and dated respecting expiry dates',pts:2.5},
+    {id:'2B.5',text:'No unauthorized freezing present',pts:1}
+  ]},
+  {id:'s3',name:'Kitchen Cleanliness',max:10,items:[
+    {id:'3.1',text:'Compliance and cleanliness of ceilings, walls and floor',pts:1.5},
+    {id:'3.2',text:'Compliance and cleanliness of rubbish bin (foot pedal + cover)',pts:0.5},
+    {id:'3.3',text:'Presence and cleanliness of shelves',pts:1},
+    {id:'3.4',text:'Compliance and cleanliness of doors and door knobs',pts:0.5},
+    {id:'3.5',text:'Compliance and cleanliness of fryer and oil',pts:0.5},
+    {id:'3.6',text:'Compliance and cleanliness of down top',pts:0.5},
+    {id:'3.7',text:'Compliance and cleanliness of oven',pts:0.5},
+    {id:'3.8',text:'Compliance and cleanliness of salamander/grill',pts:0.5},
+    {id:'3.9',text:'Compliance and cleanliness of microwave',pts:0.5},
+    {id:'3.10',text:'Compliance and cleanliness of bain-marie',pts:0.5},
+    {id:'3.11',text:'Cleanliness of utensils & appliances',pts:0.5},
+    {id:'3.12',text:'Pests in kitchen',pts:0.5},
+    {id:'3.14',text:'Absence of undesirable objects (clothing, unused equipment)',pts:0.5},
+    {id:'3.15',text:'Hand washing facilities available, accessible, equipped and clean',pts:1},
+    {id:'3.16',text:'Respect for cold chain, defrosting at +4°C maximum',pts:1}
+  ]},
+  {id:'s4',name:'Plonge Area',max:3,items:[
+    {id:'4.1',text:'Separation of plonge area from work space',pts:0.5},
+    {id:'4.2',text:'Cleaning products up to standard, correctly used and stored',pts:0.5},
+    {id:'4.3',text:'Clean dishes neatly stored (bowls stored upside down)',pts:0.5},
+    {id:'4.4',text:'Cleanliness of the washing machine',pts:0.5},
+    {id:'4.5',text:'Cleanliness of the battery',pts:0.5},
+    {id:'4.6',text:'Cleanliness of the bin at the plonge area',pts:0.5}
+  ]},
+  {id:'s5',name:'Staff Hygiene',max:4.5,items:[
+    {id:'5.1',text:'Meets dress code: shoes, pants, t-shirt/jacket, apron, headgear',pts:1},
+    {id:'5.2',text:'Cleanliness of clothing',pts:1},
+    {id:'5.3a',text:'Respects good hygiene practices (hand washing)',pts:1},
+    {id:'5.3b',text:'Covers mouth if coughs/sneezes; no jewelry etc.',pts:0.5},
+    {id:'5.4',text:'Protection of any wound',pts:1}
+  ]},
+  {id:'s6',name:'Auto-control',max:14,items:[
+    {id:'6.1',text:'Control at reception of product (verify temp, DLC and integrity)',pts:1},
+    {id:'6.2',text:'Frequently changed oil (document posted and up to date)',pts:3},
+    {id:'6.3',text:'Cleanings recorded (daily & weekly)',pts:3},
+    {id:'6.4',text:'Temperature of cold rooms recorded, posted and credible',pts:3},
+    {id:'6.5',text:'Completed previous action plan',pts:4}
+  ]}
+];
+
+var saState={};
+function saOpen(){
+  saState={};
+  SA_DATA.forEach(function(sec){sec.items.forEach(function(it){saState[it.id]={v:null,c:''}})});
+  saRender();
+  document.getElementById('saOverlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function saClose(){
+  document.getElementById('saOverlay').classList.remove('show');
+  document.body.style.overflow='';
+}
+function saCalcScore(){
+  var total=0;
+  SA_DATA.forEach(function(sec){sec.items.forEach(function(it){
+    var s=saState[it.id];
+    if(s&&s.v==='pass')total+=it.pts;
+  })});
+  return Math.round(total*10)/10;
+}
+function saCalcSecScore(sec){
+  var total=0;
+  sec.items.forEach(function(it){
+    var s=saState[it.id];
+    if(s&&s.v==='pass')total+=it.pts;
+  });
+  return Math.round(total*10)/10;
+}
+function saSetItem(id,val){
+  if(!saState[id])saState[id]={v:null,c:''};
+  saState[id].v=saState[id].v===val?null:val;
+  saRender();
+}
+function saSetComment(id,val){
+  if(!saState[id])saState[id]={v:null,c:''};
+  saState[id].c=val;
+}
+function saTogComment(id){
+  var el=document.getElementById('sa-c-'+id);
+  if(el)el.classList.toggle('show');
+  if(el&&el.classList.contains('show'))el.focus();
+}
+function saRender(){
+  var score=saCalcScore();
+  document.getElementById('saScore').textContent=score;
+  var body=document.getElementById('saBody');
+  body.innerHTML=SA_DATA.map(function(sec){
+    var secScore=saCalcSecScore(sec);
+    return '<div class="sa-sec"><div class="sa-sec-h"><div class="sa-sec-title">'+esc(sec.name)+'</div><div class="sa-sec-score">'+secScore+' / '+sec.max+'</div></div><div class="sa-sec-items">'+sec.items.map(function(it){
+      var s=saState[it.id]||{v:null,c:''};
+      var passC=s.v==='pass'?' sa-pass':'';
+      var failC=s.v==='fail'?' sa-fail':'';
+      var naC=s.v==='na'?' sa-na':'';
+      return '<div><div class="sa-item"><div class="sa-btn-row"><button class="sa-btn'+passC+'" onclick="saSetItem(\''+it.id+'\',\'pass\')">✓</button><button class="sa-btn'+failC+'" onclick="saSetItem(\''+it.id+'\',\'fail\')">✗</button><button class="sa-btn'+naC+'" onclick="saSetItem(\''+it.id+'\',\'na\')">N/A</button></div><div class="sa-item-text" onclick="saTogComment(\''+it.id+'\')">'+esc(it.id)+' '+esc(it.text)+'</div><div class="sa-item-pts">'+it.pts+'pt'+(it.pts!==1?'s':'')+'</div></div><textarea class="sa-comment'+(s.c?' show':'')+'" id="sa-c-'+it.id+'" placeholder="Comment..." onchange="saSetComment(\''+it.id+'\',this.value)">'+esc(s.c)+'</textarea></div>'
+    }).join('')+'</div></div>'
+  }).join('');
+}
+function saFinish(){
+  var score=saCalcScore();
+  var pct=Math.round(score/50*100);
+  var grade=pct>=90?'A':pct>=70?'B':'C';
+  var fails=[];
+  SA_DATA.forEach(function(sec){sec.items.forEach(function(it){
+    var s=saState[it.id];
+    if(s&&s.v==='fail')fails.push({id:it.id,text:it.text,pts:it.pts,comment:s.c||'',section:sec.name});
+  })});
+  var audit={date:S.d,shift:S.sh,ts:Date.now(),score:score,pct:pct,grade:grade,fails:fails,sections:{}};
+  SA_DATA.forEach(function(sec){audit.sections[sec.id]={score:saCalcSecScore(sec),max:sec.max}});
+  if(!CFG.auditHistory)CFG.auditHistory=[];
+  CFG.auditHistory.unshift(audit);
+  if(CFG.auditHistory.length>20)CFG.auditHistory=CFG.auditHistory.slice(0,20);
+  saveCfg();
+  if(fails.length>0){
+    if(!S.actionPlan)S.actionPlan=[];
+    fails.forEach(function(f){
+      S.actionPlan.push({action:'[Audit] '+f.id+' '+f.text+(f.comment?' — '+f.comment:''),responsible:'',when:'This week',done:false});
+    });
+    save();
+    rActionPlan();
+  }
+  saClose();
+  rAuditHistory();
+  var msg=score+'/50 ('+pct+'%) — Grade '+grade;
+  if(fails.length)msg+='. '+fails.length+' fail'+(fails.length>1?'s':'')+' added to Action Plan';
+  toast(msg);vib();
+}
+function rAuditHistory(){
+  var el=document.getElementById('auditHistory');
+  if(!el)return;
+  var hist=CFG.auditHistory||[];
+  if(!hist.length){el.innerHTML='<div class="empty-warm"><span class="ew-ico">&#x1F50D;</span><span class="ew-msg">No audits yet. Run one to see history.</span></div>';var b=document.getElementById('auditB');if(b)b.style.display='none';var n=document.getElementById('auditN');if(n)n.textContent='50-point hygiene check';return}
+  var last=hist[0];
+  var n=document.getElementById('auditN');if(n)n.textContent='Last: '+last.score+'/50 ('+last.grade+')';
+  var b=document.getElementById('auditB');if(b){b.style.display='block';b.textContent=hist.length}
+  el.innerHTML='<div style="font-weight:700;font-size:13px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">History</div>'+hist.slice(0,5).map(function(a,i){
+    var grCls=a.pct>=90?'sa-grade-a':a.pct>=70?'sa-grade-b':'sa-grade-c';
+    return '<div class="li" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream-dark)"><div><div style="font-weight:600;font-size:13px">'+esc(a.date)+' '+esc(a.shift)+'</div><div style="font-size:11px;color:var(--text-muted)">'+a.score+'/50 ('+a.pct+'%)'+(a.fails.length?' — '+a.fails.length+' fail'+(a.fails.length>1?'s':''):'')+'</div></div><span class="sa-grade '+grCls+'">'+a.grade+'</span></div>'
+  }).join('');
+}
 
 </script>
 </body>

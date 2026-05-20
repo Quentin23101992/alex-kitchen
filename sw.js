@@ -1,12 +1,14 @@
-// ALEX APP — Service Worker (cache-first)
-// Prevents Safari from purging the app after 7 days of non-use
-const CACHE_NAME = 'alexapp-v15';
-const ASSETS = ['./', './index.html'];
+// ALEX APP — Service Worker (stale-while-revalidate)
+// Serves cached version instantly, fetches fresh copy in background.
+// On next load, user gets the updated version.
+// Survives Safari's 7-day PWA purge by re-caching on every fetch.
+const CACHE_NAME = 'alexapp-v16';
+const APP_SHELL = ['./', './index.html'];
 
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(ASSETS);
+      return cache.addAll(APP_SHELL);
     })
   );
   self.skipWaiting();
@@ -25,24 +27,34 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-  // Cache-first: serve from cache, fall back to network, update cache
+  // Only handle same-origin GET requests
+  if (e.request.method !== 'GET') return;
+  if (!e.request.url.startsWith(self.location.origin)) return;
+
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      var fetchPromise = fetch(e.request).then(function(response) {
-        // Update cache with fresh version (if valid)
-        if (response && response.status === 200 && response.type === 'basic') {
-          var clone = response.clone();
-          caches.open(CACHE_NAME).then(function(cache) {
-            cache.put(e.request, clone);
-          });
-        }
-        return response;
-      }).catch(function() {
-        // Network failed — cached version (if any) already returned above
-        return cached;
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.match(e.request).then(function(cached) {
+        // Always fetch fresh copy in background
+        var networkFetch = fetch(e.request).then(function(response) {
+          if (response && response.status === 200 && response.type === 'basic') {
+            cache.put(e.request, response.clone());
+          }
+          return response;
+        }).catch(function() {
+          // Network failed — return cached if available
+          return cached;
+        });
+
+        // Stale-while-revalidate: serve cached immediately, update in background
+        return cached || networkFetch;
       });
-      // Return cached immediately, let network update in background
-      return cached || fetchPromise;
     })
   );
+});
+
+// Notify clients when a new version is available
+self.addEventListener('message', function(e) {
+  if (e.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
