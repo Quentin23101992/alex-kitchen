@@ -2,7 +2,7 @@
 // Serves cached version instantly, fetches fresh copy in background.
 // On next load, user gets the updated version.
 // Survives Safari's 7-day PWA purge by re-caching on every fetch.
-const CACHE_NAME = 'alexapp-v17';
+const CACHE_NAME = 'alexapp-v19';
 const APP_SHELL = ['./', './index.html'];
 
 self.addEventListener('install', function(e) {
