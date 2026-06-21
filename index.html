@@ -2031,14 +2031,20 @@ function checkBainMarie(){
   if(!S.bainMarie)S.bainMarie={open:'',refresh:'',disposal:''};
   var now=new Date();var h=now.getHours(),m=now.getMinutes(),hm=h+m/60;
   // 11:00 — open check
+  /* DISABLED (app never speaks first):
   if(hm>=11&&hm<11.25&&!S.bainMarie.open&&!_bmShown.open){
     _bmShown.open=true;showBMPrompt('open','Bain-marie ready? Check preps at 63°C+','Confirm temps checked and bain-marie is running.')}
+  */
   // 16:30 — refresh
+  /* DISABLED (app never speaks first):
   if(hm>=16.5&&hm<16.75&&!S.bainMarie.refresh&&!_bmShown.refresh){
     _bmShown.refresh=true;showBMPrompt('refresh','Bain-marie refresh','Re-temp all preps, top up water level.')}
+  */
   // 23:00+ PM only — disposal
+  /* DISABLED (app never speaks first):
   if(S.sh==='PM'&&hm>=23&&!S.bainMarie.disposal&&!_bmShown.disposal){
     _bmShown.disposal=true;showBMPrompt('disposal','Bain-marie end-of-service','Any prep remaining → bin + waste sheet entry.')}
+  */
 }
 function showBMPrompt(type,title,msg){
   var h='<div style="font-size:17px;font-weight:700;margin-bottom:12px">\u{1F525} '+title+'</div>';
@@ -2295,7 +2301,7 @@ function rTodayNextStep(nAlg,n86,nEq,nFu){
   else if(nEq)  {action='Review equipment issues';target='c-eq'}
   else if(nFu)  {action='Look at your follow-ups below'}
   else if(n86)  {action='Check what\'s 86\'d';target='c-86'}
-  else if(!S.shiftOpened){action='Start your shift checklist';target='c-st'}
+  else if(!S.shiftOpened){action='Start your shift checklist';target='c-start'}
   if(!action){wrap.style.display='none';return}
   wrap.style.display='block';
   wrap.innerHTML='<div style="padding:var(--sp-16);background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-sm);cursor:'+(target?'pointer':'default')+'" '+(target?'onclick="go(\'shift\');setTimeout(function(){scrollToCard(\''+target+'\')},100)"':'')+'>'+
@@ -4011,8 +4017,6 @@ saveCfg=function(){_origSaveCfg();idbSaveCfg()};
 // Boot: migrate existing data and set up recovery
 setTimeout(function(){idbMigrate();idbRecoverCfg()},1000);
 
-init();
-
 // -- SWIPE TO DELETE --
 (function(){
 var el=null,zone=null,startX=0,startY=0,dir=null,w=0,active=false;
@@ -4633,6 +4637,7 @@ function rAuditHistory(){
   }).join('');
 }
 
+init();
 </script>
 </body>
 </html>
