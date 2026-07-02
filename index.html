@@ -1685,9 +1685,10 @@ html[data-theme="service"] .eq-resolve{min-width:52px;min-height:52px}
       <div style="display:flex;gap:10px;margin-bottom:14px"><input class="fi" id="sKSM" placeholder="Default KSM" onchange="sSet('ksm',this.value)"><input class="fi" id="sPub" placeholder="Pub name" onchange="sSet('pub',this.value)"></div>
       <div id="backupInfo" style="font-size:12px;color:var(--text-muted);margin-bottom:8px"></div>
       <button class="xbtn xb-primary" onclick="backupJSON()">Backup all data (JSON)</button>
+      <button class="xbtn" onclick="copyTellQ()">Copy “Tell Q” notes</button>
       <label class="xbtn xb-purple" style="cursor:pointer">Import backup <input type="file" accept=".json" style="display:none" onchange="importJSON(this)"></label>
       <button class="xbtn xb-danger" onclick="showModal()">Clear this shift</button>
-      <div onclick="onVersionTap()" style="margin-top:20px;text-align:center;font-size:13px;color:var(--text-muted);cursor:default;user-select:none">Alex's Kitchen v4.6</div>
+      <div onclick="onVersionTap()" style="margin-top:20px;text-align:center;font-size:13px;color:var(--text-muted);cursor:default;user-select:none">Alex's Kitchen v4.7</div>
     </div></div>
 </div>
 
@@ -1793,11 +1794,21 @@ html[data-theme="service"] .eq-resolve{min-width:52px;min-height:52px}
 <datalist id="dlEquip"><option value="Fryer 1"><option value="Fryer 2"><option value="Grill"><option value="Oven"><option value="Salamander"><option value="Microwave"><option value="Bain-marie"><option value="Walk-in fridge"><option value="Walk-in freezer"><option value="Base fridge 1"><option value="Base fridge 2"><option value="Dishwasher"><option value="Ice machine"><option value="Blender"><option value="Robot coupe"><option value="Thermometer"><option value="Extraction hood"><option value="Hand wash station"><option value="Hot water"><option value="Gas line"><option value="Plonge sink"></datalist>
 <script>
 // -- SERVICE WORKER REGISTRATION --
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').then(function(reg){
-  reg.addEventListener('updatefound',function(){var nw=reg.installing;if(nw){nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller){toast('New version ready — reload to update');}})}})
-}).catch(function(){})}
+// Auto-refresh once when a new SW takes control, so Alex never runs stale code.
+// Guards: only within 15s of open, never while she's typing, never twice.
+if('serviceWorker' in navigator){
+  var _swBootTs=Date.now(),_swHadController=!!navigator.serviceWorker.controller,_swReloaded=false;
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(_swReloaded||!_swHadController)return;
+    var el=document.activeElement;
+    var typing=el&&(el.tagName==='TEXTAREA'||el.tagName==='INPUT');
+    if(Date.now()-_swBootTs<15000&&!typing){_swReloaded=true;location.reload()}
+  });
+}
 
 const K='km3_';
+function todayLocal(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 
 // -- BRAND CONFIG --
 const BRAND={name:"ALEX APP",venue:'Hop House',chain:'Frog Pubs',accent:'#D4836D',accentSoft:'#FDF0EB',secondary:'#5B8A72',secondarySoft:'#EDF5F0',coral:'#D4836D',coralSoft:'#FDF0EB'};
@@ -1948,7 +1959,7 @@ function addAlgRefItem(alg){var h='<div style="font-size:17px;font-weight:700;ma
 function delAlgRefItem(alg,i){var data=getAlgRefData();if(data[alg]&&data[alg][i]!==undefined){var name=data[alg][i];data[alg].splice(i,1);saveCfg();rAlgRef();toast(name+' removed from '+alg)}}
 
 function init(){
-  S.d=new Date().toISOString().split('T')[0];
+  S.d=todayLocal();
   document.getElementById('shiftDate').value=S.d;
   loadCfg();tryRecover();load();renderAll();renderDL();rCfg();rGuide();initAlgPicker();initReasonPicker();setTimeout(checkShiftOpen,500);setTimeout(checkBackupPrompt,2000);
   window.addEventListener('online',uConn);window.addEventListener('offline',uConn);uConn();lSet();
@@ -2165,7 +2176,7 @@ function addPrepFromHint(name){
 function sk(){return K+S.d+'_'+S.sh}
 function lsSize(){var t=0;try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);t+=k.length+localStorage.getItem(k).length}}catch(e){}return t*2}
 var _quotaWarned=false;
-function lsQuotaCheck(){var used=lsSize();var max=5*1024*1024;var pct=max?Math.round(used/max*100):0;if(pct>=90){archiveOldShifts();toast('Storage 90% full — old shifts archived');_quotaWarned=true}else if(pct>=80&&!_quotaWarned){toast('Storage '+pct+'% full — consider exporting a backup');_quotaWarned=true}return pct<95}
+function lsQuotaCheck(){var used=lsSize();var max=5*1024*1024;var pct=max?Math.round(used/max*100):0;if(pct>=90){archiveOldShifts();toast('Storage 90% full');_quotaWarned=true}else if(pct>=80&&!_quotaWarned){toast('Storage '+pct+'% full — consider exporting a backup');_quotaWarned=true}return pct<95}
 function archiveOldShifts(){var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');if(idx.length<=5)return;var toRemove=idx.slice(5);if(!confirm('Storage is 90% full. Delete '+toRemove.length+' old shift(s) to free space?\n\nTip: Export a backup first from Settings > Export.')){toast('Export a backup from Settings before storage fills up',5000);return}toRemove.forEach(function(key){localStorage.removeItem(K+key);localStorage.removeItem(K+key+'_bk')});idx=idx.slice(0,5);localStorage.setItem(K+'idx',JSON.stringify(idx));toast(toRemove.length+' old shift(s) removed')}
 function save(){gAll();S.sv=new Date().toISOString();try{if(!lsQuotaCheck()){toast('Storage full — export a backup from Settings, then delete old shifts',5000);sSave(0);return}localStorage.setItem(sk(),JSON.stringify(S));var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');var key=S.d+'_'+S.sh;if(idx.indexOf(key)===-1){idx.push(key);idx.sort().reverse();localStorage.setItem(K+'idx',JSON.stringify(idx))}sSave(1)}catch(e){if(e.name==='QuotaExceededError'){toast('Storage full — export a backup, then clear old shifts',5000);archiveOldShifts();try{localStorage.setItem(sk(),JSON.stringify(S));sSave(1);return}catch(e2){}}sSave(0)}}
 function load(){try{var d=localStorage.getItem(sk());if(d){S=JSON.parse(d);if(typeof S.comms==='string'){S.comms=S.comms?[{text:S.comms,ts:'migrated'}]:[];}if(!Array.isArray(S.comms))S.comms=[];if(!Array.isArray(S.e86))S.e86=[];if(!Array.isArray(S.allergens))S.allergens=[];if(!Array.isArray(S.equip))S.equip=[];if(Array.isArray(S.preps)){S.preps.forEach(function(p){if(typeof p.done==='undefined')p.done=false;if(typeof p.doneTs==='undefined')p.doneTs='';if(typeof p.assign==='undefined')p.assign='';if(typeof p.by==='undefined')p.by='';if(typeof p.amt==='undefined')p.amt='';if(typeof p.dur==='undefined')p.dur=''})}if(Array.isArray(S.team)){S.team.forEach(function(t){if(typeof t.st==='undefined')t.st='';if(typeof t.fin==='undefined')t.fin='';if(typeof t.brk==='undefined')t.brk=''})}if(!S.ho)S.ho={c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:''};if(!S.plan)S.plan={a:'',b:'',c:''};if(!Array.isArray(S.feedback))S.feedback=[];if(!S.clAssign)S.clAssign={};if(!S.psC)S.psC={};if(!Array.isArray(S.stickies))S.stickies=[];if(!Array.isArray(S.actionPlan))S.actionPlan=[];if(!S.bainMarie)S.bainMarie={open:'',refresh:'',disposal:''};if(typeof S.shiftOpened==='undefined')S.shiftOpened=false;if(typeof S.shiftClosed==='undefined')S.shiftClosed=false;if(!S.clsC)S.clsC={};if(!Array.isArray(S.brainDumpItems))S.brainDumpItems=[];if(typeof S.energyLevel==='undefined')S.energyLevel='';if(!Array.isArray(S.energyNotes))S.energyNotes=[];if(!Array.isArray(S.followUps))S.followUps=[];if(!Array.isArray(S.deferredItems))S.deferredItems=[];if(typeof S.focusToday==='undefined')S.focusToday=''}else{S={d:S.d,sh:S.sh,team:[],e86:[],comms:[],preps:[],dels:[],stC:{},clC:{},psC:{},ho:{c:'',n:'',d:'',s:'',e:'',no:'',k:'',t:''},allergens:[],equip:[],plan:{a:'',b:'',c:''},feedback:[],clAssign:{},stickies:[],shiftOpened:false,shiftClosed:false,clsC:{}};var dk=localStorage.getItem(K+'s_ksm');if(dk)S.ho.k=dk}}catch(e){}}
@@ -2358,7 +2369,7 @@ function rTodayFollowUps(){
   wrap.innerHTML=html
 }
 function resolveFollowUp(id){if(!S.followUps)return;S.followUps.forEach(function(f){if(f.id===id)f.resolved=true});save();rToday()}
-function deferFollowUp(id){if(!S.followUps||!S.deferredItems)return;var idx=-1;S.followUps.forEach(function(f,i){if(f.id===id)idx=i});if(idx>-1){var item=S.followUps.splice(idx,1)[0];S.deferredItems.push({id:item.id,text:item.text,from:'followUp',deferred:new Date().toISOString()});save();rToday()}}
+function deferFollowUp(id){if(!S.followUps)return;if(!S.deferredItems)S.deferredItems=[];var idx=-1;S.followUps.forEach(function(f,i){if(f.id===id)idx=i});if(idx>-1){var item=S.followUps.splice(idx,1)[0];S.deferredItems.push({id:item.id,text:item.text,from:'followUp',deferred:new Date().toISOString()});save();rToday()}}
 var _sortBusy=false;
 function sortTodayDump(){if(_sortBusy)return;_sortBusy=true;setTimeout(function(){_sortBusy=false},500);try{var ta=document.getElementById('todayDumpInput');if(!ta||!ta.value.trim())return;var lines=ta.value.split(/[\n,]+/).map(function(s){return s.trim()}).filter(function(s){return s.length>0});if(!lines.length)return;var routed=[],leftover=[];lines.forEach(function(line){var sr=smartRoute(line);if(sr&&!sr.result.skip){routed.push(sr)}else{leftover.push(line)}});if(leftover.length){var items=parseBrainDump(leftover.join('\n'));S.brainDumpItems=S.brainDumpItems.concat(items)}ta.value='';save();if(routed.length){var msg=routed.length===1?'Sent to '+routeToastLabel(routed[0].route.id):'Sorted '+routed.length+' items';toast(msg,3000);renderAll()}else{toast('Got it',3000);go('dump');rDump()}}catch(e){console.error('sortTodayDump error:',e)}}
 function parseBrainDump(text){
@@ -3016,7 +3027,7 @@ function parsePrepAmt(s){if(!s)return{qty:1,unit:''};var m=s.match(/^(\d+)\s*[x�
 function prepUnitOpts(sel){return '<option value="">--</option>'+PREP_UNITS.map(function(u){return '<option value="'+u+'"'+(sel===u?' selected':'')+'>'+u+'</option>'}).join('')}
 function updPrepAmt(i){var q=document.querySelector('[data-pamtq="'+i+'"]');var u=document.querySelector('[data-pamtu="'+i+'"]');if(!q||!u)return;var qty=parseInt(q.value)||1;var unit=u.value;S.preps[i].amt=unit?(qty>1?qty+' x '+unit:unit):'';save();rPreps()}
 
-function prepStatus(p){if(!p.by||!p.t)return '';if(S.d!==new Date().toISOString().split('T')[0])return '';var now=new Date();var h=parseInt(p.by.split(':')[0]),m=parseInt(p.by.split(':')[1]);var dl=new Date();dl.setHours(h,m,0,0);if(p.done){if(!p.doneTs)return 'prep-ontime';var dh=parseInt(p.doneTs.split(':')[0]),dm=parseInt(p.doneTs.split(':')[1]);var doneTime=new Date();doneTime.setHours(dh,dm,0,0);return doneTime<=dl?'prep-ontime':'prep-late'}var diff=(dl-now)/60000;if(diff<0)return 'prep-over';if(diff<30)return 'prep-soon';return 'prep-ontime'}
+function prepStatus(p){if(!p.by||!p.t)return '';if(S.d!==todayLocal())return '';var now=new Date();var h=parseInt(p.by.split(':')[0]),m=parseInt(p.by.split(':')[1]);var dl=new Date();dl.setHours(h,m,0,0);if(p.done){if(!p.doneTs)return 'prep-ontime';var dh=parseInt(p.doneTs.split(':')[0]),dm=parseInt(p.doneTs.split(':')[1]);var doneTime=new Date();doneTime.setHours(dh,dm,0,0);return doneTime<=dl?'prep-ontime':'prep-late'}var diff=(dl-now)/60000;if(diff<0)return 'prep-over';if(diff<30)return 'prep-soon';return 'prep-ontime'}
 function teamOpts(sel){return '<option value=""'+(sel?'':' selected')+'>--</option>'+S.team.filter(function(t){return t.n}).map(function(t){return '<option value="'+esc(t.n)+'"'+(sel&&sel===t.n?' selected':'')+'>'+esc(t.n)+'</option>'}).join('')}
 function rPreps(){var c=document.getElementById('prepL');if(!S.preps.length){c.innerHTML='<div class="empty-warm"><span class="ew-ico">\u{1F4CB}</span><span class="ew-msg">No preps added yet</span></div>'}else{c.innerHTML=S.preps.map(function(p,i){var st=prepStatus(p);var stLabel=st==='prep-over'?'still going':st==='prep-soon'?'coming up':st==='prep-late'?'done':st==='prep-ontime'?'on time':'';var pills='';if(p.amt)pills+='<span class="prep-pill prep-pill-amt">'+esc(p.amt)+'</span>';if(p.assign)pills+='<span class="prep-pill prep-pill-who">'+esc(p.assign)+'</span>';if(p.dur)pills+='<span class="prep-pill prep-pill-dur">'+esc(p.dur)+'min</span>';if(p.by)pills+='<span class="prep-pill prep-pill-time">by '+esc(p.by)+'</span>';if(p.done&&p.doneTs)pills+='<span class="prep-pill prep-pill-done">done '+esc(p.doneTs)+'</span>';if(st&&stLabel)pills+='<span class="prep-status '+st+'">'+stLabel+'</span>';var pillsHtml=pills?'<div class="prep-pills">'+pills+'</div>':'';return '<div class="prep-card'+(p.done?' done':'')+'" id="pc'+i+'"><div class="prep-main"><div class="prep-cb" onclick="togglePrep('+i+',this)">'+(p.done?'&#10003;':'')+'</div><div class="prep-info"><input list="dlPreps" class="prep-name" placeholder="What needs prepping?" value="'+esc(p.t)+'" data-pt="'+i+'" onchange="S.preps['+i+'].t=this.value;save()">'+pillsHtml+'</div><div class="prep-expand" onclick="togPrepDet('+i+',this)">&#9662;</div></div><div class="prep-detail" id="pd'+i+'"><div class="prep-detail-grid-4"><div><label>Amount</label><div style="display:flex;gap:4px">'+function(){var pa=parsePrepAmt(p.amt);return '<input type="number" min="1" max="99" value="'+pa.qty+'" style="width:50px;text-align:center" data-pamtq="'+i+'" onchange="updPrepAmt('+i+')"><select data-pamtu="'+i+'" onchange="updPrepAmt('+i+')" style="flex:1">'+prepUnitOpts(pa.unit)+'</select>'}()+'</div></div><div><label>Assigned to</label><select data-pa="'+i+'" onchange="S.preps['+i+'].assign=this.value;save();rPreps()">'+teamOpts(p.assign)+'</select></div><div><label>Duration (min)</label><input type="number" placeholder="30" value="'+esc(p.dur||'')+'" min="1" max="480" data-pdur="'+i+'" onchange="S.preps['+i+'].dur=this.value;save();rPreps()"></div><div><label>Deadline</label><input type="time" value="'+esc(p.by||'')+'" data-pby="'+i+'" onchange="S.preps['+i+'].by=this.value;save();rPreps()"></div></div><div class="prep-actions">'+(i>0?'<button onclick="mvPrep('+i+',-1)">&#9650; Up</button>':'')+(i<S.preps.length-1?'<button onclick="mvPrep('+i+',1)">&#9660; Down</button>':'')+'<button class="prep-act-del" onclick="dPrep('+i+')">&#10005; Remove</button></div></div></div>'}).join('')}var cnt=S.preps.filter(function(p){return p.t}).length;var dn=S.preps.filter(function(p){return p.t&&p.done}).length;var left=cnt-dn;document.getElementById('prepN').textContent=cnt===0?'No preps yet':left===0?'All done':dn===0?'Prep Plan':dn+'/'+cnt+' done';if(left===0&&cnt>0){var card=document.getElementById('c-prep');if(card&&!card.dataset.glowed){card.classList.add('cd-glow');card.dataset.glowed='1';toast('All preps done')}}for(var oi in _openPrepDets){if(_openPrepDets.hasOwnProperty(oi)){var pd=document.getElementById('pd'+oi);var pb=pd?pd.parentNode.querySelector('.prep-expand'):null;if(pd){pd.classList.add('show');if(pb)pb.classList.add('open')}}}if(prepView==='cook'&&S.preps.length){var groups={},order=[];S.preps.forEach(function(p,i){var who=p.assign||'Unassigned';if(!groups[who]){groups[who]={done:0,total:0,indices:[]};order.push(who)}groups[who].indices.push(i);if(p.t)groups[who].total++;if(p.t&&p.done)groups[who].done++});var frag=document.createDocumentFragment();order.forEach(function(who){var g=groups[who];var wrap=document.createElement('div');wrap.className='prep-cook-grp';wrap.innerHTML='<div class="prep-cook-hdr" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'"><span>'+esc(who)+' ('+g.done+'/'+g.total+')</span><span class="pcg-stat">'+(g.done===g.total&&g.total>0?'✓':'')+'</span></div>';var body=document.createElement('div');g.indices.forEach(function(idx){var card=document.getElementById('pc'+idx);if(card)body.appendChild(card)});wrap.appendChild(body);frag.appendChild(wrap)});c.innerHTML='';c.appendChild(frag)}rDelegSummary()}
 var prepView='flat';
@@ -3221,14 +3232,15 @@ function xPDF(){
 }
 
 // -- BACKUP --
-function backupJSON(){var all={};var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');idx.forEach(function(k){all[k]=JSON.parse(localStorage.getItem(K+k)||'{}')});all._settings={ksm:localStorage.getItem(K+'s_ksm'),pub:localStorage.getItem(K+'s_pub')};all._config=CFG;var blob=new Blob([JSON.stringify(all,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='kitchen_backup_'+new Date().toISOString().split('T')[0]+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);toast('Backup saved')}
-function importJSON(input){var file=input.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(e){try{var all=JSON.parse(e.target.result);var count=0;for(var k in all){if(!all.hasOwnProperty(k))continue;var v=all[k];if(k==='_settings'){if(v.ksm)localStorage.setItem(K+'s_ksm',v.ksm);if(v.pub)localStorage.setItem(K+'s_pub',v.pub)}else if(k==='_config'){CFG=v;if(!CFG.products)CFG.products=[];if(!CFG.suppliers)CFG.suppliers=[];saveCfg()}else{localStorage.setItem(K+k,JSON.stringify(v));var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');if(idx.indexOf(k)===-1){idx.push(k);idx.sort().reverse();localStorage.setItem(K+'idx',JSON.stringify(idx))}count++}}load();renderAll();lSet();renderDL();rCfg();toast(count+' shifts imported!')}catch(err){toast('Invalid backup file')}};reader.readAsText(file)}
+function copyTellQ(){var seen={};var out=[];try{(JSON.parse(localStorage.getItem('km3_tellq')||'[]')).forEach(function(e){if(e&&e.ts&&!seen[e.ts]){seen[e.ts]=1;out.push(e)}})}catch(e){}try{var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');idx.forEach(function(k){var s=JSON.parse(localStorage.getItem(K+k)||'{}');if(Array.isArray(s.tellQ))s.tellQ.forEach(function(e){if(e&&e.ts&&!seen[e.ts]){seen[e.ts]=1;out.push(e)}})})}catch(e){}if(!out.length){toast('No Tell Q notes yet');return}out.sort(function(a,b){return a.ts<b.ts?-1:1});var txt=out.map(function(e){return e.date+' '+e.shift+' \u2014 '+e.text}).join('\n');cp(txt);toast(out.length+' note'+(out.length>1?'s':'')+' copied')}
+function backupJSON(){var all={};var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');idx.forEach(function(k){all[k]=JSON.parse(localStorage.getItem(K+k)||'{}')});all._settings={ksm:localStorage.getItem(K+'s_ksm'),pub:localStorage.getItem(K+'s_pub')};all._config=CFG;try{all._tellq=JSON.parse(localStorage.getItem('km3_tellq')||'[]')}catch(e){all._tellq=[]}var blob=new Blob([JSON.stringify(all,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='kitchen_backup_'+todayLocal()+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);toast('Backup saved')}
+function importJSON(input){var file=input.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(e){try{var all=JSON.parse(e.target.result);var count=0;for(var k in all){if(!all.hasOwnProperty(k))continue;var v=all[k];if(k==='_settings'){if(v.ksm)localStorage.setItem(K+'s_ksm',v.ksm);if(v.pub)localStorage.setItem(K+'s_pub',v.pub)}else if(k==='_config'){CFG=v;if(!CFG.products)CFG.products=[];if(!CFG.suppliers)CFG.suppliers=[];saveCfg()}else if(k==='_tellq'){try{if(Array.isArray(v)&&v.length)localStorage.setItem('km3_tellq',JSON.stringify(v))}catch(e){}}else{localStorage.setItem(K+k,JSON.stringify(v));var idx=JSON.parse(localStorage.getItem(K+'idx')||'[]');if(idx.indexOf(k)===-1){idx.push(k);idx.sort().reverse();localStorage.setItem(K+'idx',JSON.stringify(idx))}count++}}load();renderAll();lSet();renderDL();rCfg();toast(count+' shifts imported!')}catch(err){toast('Invalid backup file')}};reader.readAsText(file)}
 
 // -- D3: AUTO-BACKUP --
 function checkBackupPrompt(){
   var today=new Date();
   if(today.getDay()!==0)return;
-  var todayStr=today.toISOString().split('T')[0];
+  var todayStr=todayLocal();
   if(CFG.lastBackupPrompt===todayStr)return;
   CFG.lastBackupPrompt=todayStr;saveCfg();
   var t=document.getElementById('toast'),m=document.getElementById('toastMsg'),u=document.getElementById('undoBtn');
@@ -3243,14 +3255,15 @@ function doAutoBackup(){
   idx.forEach(function(k){all[k]=JSON.parse(localStorage.getItem(K+k)||'{}')});
   all._settings={ksm:localStorage.getItem(K+'s_ksm'),pub:localStorage.getItem(K+'s_pub')};
   all._config=CFG;
+  try{all._tellq=JSON.parse(localStorage.getItem('km3_tellq')||'[]')}catch(e){all._tellq=[]}
   var json=JSON.stringify(all,null,2);
   var blob=new Blob([json],{type:'application/json'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');a.href=url;
-  a.download='kitchen_auto_backup_'+new Date().toISOString().split('T')[0]+'.json';
+  a.download='kitchen_auto_backup_'+todayLocal()+'.json';
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   if(!CFG.autoBackups)CFG.autoBackups=[];
-  CFG.autoBackups.unshift({date:new Date().toISOString().split('T')[0],size:Math.round(json.length/1024)+'KB'});
+  CFG.autoBackups.unshift({date:todayLocal(),size:Math.round(json.length/1024)+'KB'});
   if(CFG.autoBackups.length>3)CFG.autoBackups=CFG.autoBackups.slice(0,3);
   saveCfg();toast('Backup downloaded');
 }
